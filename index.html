@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio - Sistema de Monitoreo Ambiental Inteligente</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Navegación principal"></nav>
+    <a href="/src/pages/login.html" data-auth="login" class="px-4 py-1.5 rounded text-sm font-semibold no-underline bg-white/20 text-white hover:bg-white/30 transition-all duration-150">Iniciar sesión</a>
+  </header>
+  <main id="main" class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto">
+    <div class="card-modern mb-6">
+      <h2 class="text-lg font-semibold mb-4">Bienvenido al Sistema de Monitoreo Ambiental Inteligente</h2>
+      <p class="text-sm text-muted mb-4">Plataforma para la captura, monitoreo y análisis de datos ambientales en tiempo real. Seleccione un módulo para comenzar.</p>
+      <figure class="text-center my-5">
+        <img src="/assets/img/diagrama-flujo-sensores.png" alt="Diagrama de flujo del sistema SMAI: sensores → SMAI → acciones" class="max-w-full h-auto rounded-lg inline-block">
+        <figcaption class="text-xs text-muted mt-1.5">Flujo del sistema: sensores en terreno → plataforma SMAI → acciones del usuario</figcaption>
+      </figure>
+    </div>
+    <div class="card-modern mb-6">
+      <h2 class="text-lg font-semibold mb-3">Video: Monitoreo Ambiental Inteligente</h2>
+      <p class="text-sm text-muted mb-3">Conozca cómo SMAI ayuda a monitorear y gestionar datos ambientales en Colombia.</p>
+      <figure>
+        <video controls preload="metadata" aria-label="Video explicativo del sistema SMAI" class="w-full rounded">
+          <source src="/assets/video/Monitoreo ambiental inteligente en Colombia(720P_HD).mp4" type="video/mp4">
+          <track kind="captions" src="/assets/captions/captions-monitoreo.vtt" srclang="es" label="Español" default>
+          <track kind="descriptions" src="/assets/captions/descriptions-monitoreo.vtt" srclang="es" label="Audiodescripción">
+        </video>
+        <figcaption class="text-sm text-muted mt-2">Video: Sistema de Monitoreo Ambiental Inteligente en Colombia</figcaption>
+      </figure>
+      <div class="video-transcript hidden mt-3 p-3 bg-accent/50 rounded border-l-4 border-primary text-sm" id="transcript-monitoreo" role="region" aria-label="Transcripción del video">
+        <h3 class="text-sm font-semibold mb-1.5">Transcripción</h3>
+        <p>Desde selvas tropicales y montañas nevadas hasta sabanas y desiertos, Colombia es el segundo país más biodiverso del planeta, requiriendo tecnología e información accionable para su protección y conservación...</p>
+      </div>
+      <div class="audio-description hidden mt-3 p-3 bg-amber-50 rounded border-l-4 border-warning text-sm" role="region" aria-label="Audiodescripción del video">
+        <h3 class="text-sm font-semibold mb-1.5">Audiodescripción</h3>
+        <p>El video abre con tomas panorámicas de la geografía colombiana...</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-5 mt-6">
+      <a href="/src/pages/dashboard.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">📊</span>
+        <h3 class="font-semibold mb-2">Dashboard</h3>
+      </a>
+      <a href="/src/pages/umbrales.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">⚙️</span>
+        <h3 class="font-semibold mb-2">Gestión de Umbrales</h3>
+      </a>
+      <a href="/src/pages/consulta-datos.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔍</span>
+        <h3 class="font-semibold mb-2">Consulta de Datos</h3>
+      </a>
+      <a href="/src/pages/reporte-fallas.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔧</span>
+        <h3 class="font-semibold mb-2">Reporte de Fallas</h3>
+      </a>
+      <a href="/src/pages/lecturas-manuales.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">📝</span>
+        <h3 class="font-semibold mb-2">Lecturas Manuales</h3>
+      </a>
+      <a href="/src/pages/alertas.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔔</span>
+        <h3 class="font-semibold mb-2">Alertas</h3>
+        <p class="text-xs text-muted mt-2">Historial de alertas ambientales generadas automáticamente.</p>
+      </a>
+      <a href="/src/pages/login.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+        <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔐</span>
+        <h3 class="font-semibold mb-2">Inicio de Sesión</h3>
+      </a>
+    </div>
+    <div class="text-center mt-6" id="demoBtnContainer">
+      <button class="px-3 py-1.5 rounded text-sm font-semibold cursor-pointer bg-gray-600 text-white hover:opacity-85 border-none" onclick="restaurarDemo()">🔄 Restaurar datos demo</button>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p>Sistema de Monitoreo Ambiental Inteligente &copy; 2026 | <a href="/src/pages/sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+  </footer>
+
+  <script type="module">
+    import Alpine from '/src/js/main.js';
+    import { confirmAction, showNotification } from '/src/js/utils.js';
+    import { seedDemoData } from '/src/js/seed-data.js';
+
+    window.restaurarDemo = function() {
+      confirmAction('Restaurar datos demo', '¿Está seguro? Se perderán todos los datos actuales (lecturas, reportes, umbrales, alertas, mantenimientos) y se cargarán los datos de demostración.').then(r => {
+        if (r) {
+          ['smai_lecturas','smai_umbrales','smai_reportes','smai_mantos','smai_alertas','smai_seeded_v1'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
+          seedDemoData();
+          showNotification('Datos demo restaurados correctamente. Recargando...', 'success');
+          setTimeout(() => { location.reload(); }, 1500);
+        }
+      });
+    };
+
+    Alpine.start();
+  </script>
+</body>
+</html>

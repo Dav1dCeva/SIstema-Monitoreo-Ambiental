@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Monitoreo Ambiental</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Navegación principal"></nav>
+  </header>
+  <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="dashboardApp()">
+    <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
+      <h2 class="text-lg font-semibold">Dashboard de Monitoreo</h2>
+      <div class="flex gap-2">
+        <button class="btn-success" data-tooltip="Descarga un archivo PDF con las lecturas actuales" @click="exportPDF('dashboard')"><span aria-hidden="true">📄</span> Generar reporte PDF</button>
+        <button class="btn-primary" data-tooltip="Descarga un archivo Excel con las lecturas actuales" @click="exportExcel('dashboard')"><span aria-hidden="true">📊</span> Descargar Excel</button>
+      </div>
+    </div>
+
+    <figure class="text-center mb-4">
+      <img src="/assets/img/red-sensores.png" alt="Red de sensores desplegados por zona: Torre Norte, Río Principal, Centro Urbano, Zona Industrial conectados al Centro de Control SMAI" class="max-w-full h-auto rounded-lg inline-block">
+      <figcaption class="text-xs text-muted mt-1.5">Red de sensores desplegados — las lecturas se transmiten al centro de control SMAI</figcaption>
+    </figure>
+
+    <div class="flex gap-4 flex-wrap mb-6">
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalLecturas">0</div><div class="stat-label">Lecturas registradas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalSensores">0</div><div class="stat-label">Sensores activos</div></div>
+      <div class="stat-card danger"><div class="stat-value text-danger" x-text="totalAlertas">0</div><div class="stat-label">Alertas activas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="diasConDatos">0</div><div class="stat-label">Días con datos</div></div>
+    </div>
+
+    <div class="context-bar" id="contextGeneral">
+      Resumen general del sistema de monitoreo. Las métricas superiores muestran el promedio general de cada variable ambiental medida por todos los sensores desplegados.
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <template x-for="m in metricas" :key="m.label">
+        <div class="stat-card" :style="'border-left-color:'+m.color">
+          <div class="stat-value" x-text="m.valor" :style="'color:'+m.color">--</div>
+          <div class="stat-label" x-text="m.label"></div>
+          <div class="text-xs text-muted mt-1">Promedio general</div>
+        </div>
+      </template>
+    </div>
+
+    <div class="card-modern mb-6">
+      <h2 class="text-base font-semibold mb-3">Últimas Lecturas por Sensor</h2>
+      <div class="context-bar" id="contextSensores">
+        Cada tarjeta representa un sensor físico. Muestra la lectura más reciente y su estado.
+      </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
+        <template x-for="s in sensores" :key="s.id">
+          <div class="bg-card p-4 rounded-lg shadow-card border border-border" :style="'border-left:4px solid '+s.color">
+            <div class="text-sm text-muted" x-text="s.nombre"></div>
+            <div class="text-2xl font-bold mt-1" x-text="s.valorMostrado"></div>
+            <div class="text-xs mt-2" :class="'badge '+s.badgeCls" x-text="s.estado"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div class="card-modern mb-6">
+      <h2 class="text-base font-semibold mb-3">Tendencias de Temperatura (Últimos 7 días)</h2>
+      <div class="context-bar">
+        Este gráfico muestra el promedio diario de temperatura del sensor ST-001 (Torre Norte) durante la última semana.
+      </div>
+      <div class="min-h-[280px] flex items-center justify-center">
+        <canvas id="tempChart" class="max-h-[300px] w-full"></canvas>
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <div class="flex justify-between items-center flex-wrap gap-2 mb-3">
+        <h2 class="text-base font-semibold">Alertas Recientes</h2>
+        <button class="btn-danger" @click="simularAlerta()">🚨 Simular alerta</button>
+      </div>
+      <div class="context-bar">
+        Las alertas se generan automáticamente cuando una lectura supera los umbrales configurados.
+      </div>
+      <table class="w-full text-sm">
+        <thead>
+          <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Parámetro</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ubicación</th></tr>
+        </thead>
+        <tbody>
+          <template x-if="alertasRecientes.length === 0">
+            <tr><td colspan="4" class="px-3 py-2.5 text-center text-muted">No hay alertas recientes.</td></tr>
+          </template>
+          <template x-for="a in alertasRecientes" :key="a.fecha">
+            <tr>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.fechaFormateada"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.parametro"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.valor"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.ubicacion"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script type="module">
+    import Alpine from '/src/js/main.js';
+    import { getFromLS } from '/src/js/utils.js';
+    import { protectPage } from '/src/js/auth.js';
+    import { simularAlerta } from '/src/js/seed-data.js';
+
+    protectPage();
+
+    const SENSORES = [
+      { id: 'ST-001', nombre: 'ST-001 - Torre Norte', param: 'Temperatura', color: '#198754', unidad: '°C' },
+      { id: 'SH-002', nombre: 'SH-002 - Río Principal', param: 'Humedad', color: '#0d6efd', unidad: '%' },
+      { id: 'SA-003', nombre: 'SA-003 - Centro Urbano', param: 'Calidad del Aire', color: '#b38600', unidad: 'AQI' },
+      { id: 'SR-004', nombre: 'SR-004 - Zona Industrial', param: 'Ruido', color: '#6f42c1', unidad: 'dB' }
+    ];
+
+    let tempChartInstance = null;
+
+    Alpine.data('dashboardApp', () => ({
+      lecturas: [],
+      alertas: [],
+      sensores: SENSORES.map(s => ({ ...s, valorMostrado: '--', estado: 'Cargando...', badgeCls: 'badge-secondary' })),
+
+      get totalLecturas() { return this.lecturas.length; },
+      get totalSensores() { return new Set(this.lecturas.map(l => l.sensor)).size; },
+      get totalAlertas() { return this.alertas.length; },
+      get diasConDatos() {
+        const dias = {};
+        this.lecturas.forEach(l => dias[l.fecha.slice(0,10)] = true);
+        return Object.keys(dias).length;
+      },
+
+      get metricas() {
+        return SENSORES.map(s => {
+          const filtradas = this.lecturas.filter(l => l.sensor === s.id);
+          const prom = filtradas.length > 0 ? (filtradas.reduce((a,b) => a + b.valor, 0) / filtradas.length).toFixed(1) : '--';
+          return { label: s.param + (s.unidad === '%' ? ' (%)' : ''), valor: prom, color: s.color };
+        });
+      },
+
+      get alertasRecientes() {
+        return this.alertas.slice(-5).reverse().map(a => ({
+          ...a,
+          fechaFormateada: new Date(a.fecha).toLocaleDateString('es-CL')
+        }));
+      },
+
+      init() {
+        this.lecturas = getFromLS('smai_lecturas');
+        this.alertas = getFromLS('smai_alertas');
+        this.actualizarSensores();
+        this.$nextTick(() => this.initChart());
+      },
+
+      actualizarSensores() {
+        const ultimas = {};
+        this.lecturas.forEach(l => ultimas[l.sensor] = l);
+        this.sensores = this.sensores.map(s => {
+          const ult = ultimas[s.id];
+          if (!ult) return { ...s, valorMostrado: '--', estado: 'Sin datos', badgeCls: 'badge-secondary' };
+          const enAlerta = this.alertas.some(a => a.valor.includes(String(ult.valor)));
+          return {
+            ...s,
+            valorMostrado: ult.valor + ' ' + s.unidad,
+            estado: enAlerta ? 'Alerta' : 'Normal',
+            badgeCls: enAlerta ? 'badge-danger' : 'badge-success'
+          };
+        });
+      },
+
+      initChart() {
+        const ctx = document.getElementById('tempChart');
+        if (!ctx) return;
+        if (tempChartInstance) { tempChartInstance.destroy(); tempChartInstance = null; }
+        const dias = [];
+        for (let i = 6; i >= 0; i--) {
+          const inicio = new Date(); inicio.setDate(inicio.getDate() - i); inicio.setHours(0,0,0,0);
+          const fin = new Date(); fin.setDate(fin.getDate() - i); fin.setHours(23,59,59,999);
+          const temps = this.lecturas.filter(l => {
+            if (l.sensor !== 'ST-001') return false;
+            const f = new Date(l.fecha);
+            return f >= inicio && f <= fin;
+          });
+          const prom = temps.length > 0 ? (temps.reduce((a,b) => a + b.valor, 0) / temps.length) : null;
+          dias.push(prom !== null ? Math.round(prom * 10) / 10 : null);
+        }
+        const labels = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+        const today = new Date();
+        const labelIndices = [];
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(); d.setDate(d.getDate() - i);
+          labelIndices.push(d.getDay());
+        }
+        tempChartInstance = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: labelIndices.map(i => labels[i]),
+            datasets: [{
+              label: 'Temperatura (°C)',
+              data: dias,
+              backgroundColor: dias.map(v => v !== null ? '#0d6efd' : '#808080'),
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: false, title: { display: true, text: '°C' } }, x: { grid: { display: false }, ticks: { maxRotation: 0 } } }
+          }
+        });
+      },
+
+      simularAlerta() {
+        simularAlerta();
+        this.alertas = getFromLS('smai_alertas');
+        this.actualizarSensores();
+      }
+    }));
+
+    Alpine.start();
+  </script>
+</body>
+</html>

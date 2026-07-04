@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alertas - SMAI</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Navegación principal"></nav>
+  </header>
+  <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="alertasApp()">
+    <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
+      <h2 class="text-lg font-semibold">Alertas</h2>
+      <button class="btn-danger" @click="simular()" data-tooltip="Genere una alerta de prueba aleatoria para verificar el funcionamiento">🚨 Simular alerta</button>
+    </div>
+
+    <div class="context-bar">
+      Las alertas se generan automáticamente cuando una lectura supera los umbrales configurados en la gestión de umbrales.
+    </div>
+
+    <div class="flex gap-4 flex-wrap mb-6">
+      <div class="stat-card danger"><div class="stat-value text-danger" x-text="totalAlertas">0</div><div class="stat-label">Alertas activas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="ultimaSemana">0</div><div class="stat-label">Última semana</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="paramsAfectados">0</div><div class="stat-label">Parámetros afectados</div></div>
+    </div>
+
+    <div class="card-modern">
+      <h2 class="text-base font-semibold mb-4">Historial de Alertas</h2>
+      <table class="w-full text-sm">
+        <thead>
+          <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Parámetro</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Valor registrado</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ubicación</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Detalle</th></tr>
+        </thead>
+        <tbody>
+          <template x-if="alertas.length === 0">
+            <tr><td colspan="5" class="px-3 py-2.5 text-center text-muted">No hay alertas registradas. Use "Simular alerta" para generar una de prueba.</td></tr>
+          </template>
+          <template x-for="a in alertas" :key="a.fecha">
+            <tr>
+              <td class="px-3 py-2.5 border-b border-border" x-text="formatearFecha(a.fecha)"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.parametro || a.mensaje?.split(' ')[0] || '—'"></td>
+              <td class="px-3 py-2.5 border-b border-border"><span class="badge badge-danger" x-text="a.valor || '—'"></span></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.ubicacion || '—'"></td>
+              <td class="px-3 py-2.5 border-b border-border text-xs" x-text="a.mensaje || '—'"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+  </footer>
+
+  <script type="module">
+    import Alpine from '/src/js/main.js';
+    import { getFromLS, showNotification } from '/src/js/utils.js';
+    import { protectPage } from '/src/js/auth.js';
+    import { simularAlerta } from '/src/js/seed-data.js';
+
+    protectPage();
+
+    Alpine.data('alertasApp', () => ({
+      alertas: [],
+      get totalAlertas() { return this.alertas.length; },
+      get ultimaSemana() {
+        const semana = Date.now() - 7 * 24 * 60 * 60 * 1000;
+        return this.alertas.filter(a => new Date(a.fecha).getTime() >= semana).length;
+      },
+      get paramsAfectados() {
+        const p = {};
+        this.alertas.forEach(a => p[a.parametro || 'desconocido'] = true);
+        return Object.keys(p).length;
+      },
+      init() { this.alertas = getFromLS('smai_alertas'); },
+      formatearFecha(f) { return new Date(f).toLocaleDateString('es-CL'); },
+      simular() {
+        simularAlerta();
+        this.alertas = getFromLS('smai_alertas');
+      }
+    }));
+
+    Alpine.start();
+  </script>
+</body>
+</html>

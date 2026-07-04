@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa del Sitio - SMAI</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Navegación principal"></nav>
+  </header>
+  <main id="main" hidden class="flex-1 px-6 py-8 max-w-3xl w-full mx-auto">
+      <div class="card-modern">
+      <h2 class="text-lg font-semibold mb-4">Mapa del Sitio</h2>
+      <p class="text-sm text-muted mb-4">Acceda a todas las secciones del Sistema de Monitoreo Ambiental Inteligente desde un solo lugar.</p>
+      <ul class="space-y-3">
+        <li><a href="/index.html" class="font-semibold text-primary no-underline hover:underline">Inicio</a><br><span class="text-sm text-muted">Portal principal con acceso a todos los módulos.</span></li>
+        <li><a href="dashboard.html" class="font-semibold text-primary no-underline hover:underline">Dashboard</a><br><span class="text-sm text-muted">Visualización de lecturas de sensores en tiempo real y generación de reportes.</span></li>
+        <li><a href="umbrales.html" class="font-semibold text-primary no-underline hover:underline">Gestión de Umbrales</a><br><span class="text-sm text-muted">Configuración de límites y reglas de alerta para parámetros ambientales.</span></li>
+        <li><a href="consulta-datos.html" class="font-semibold text-primary no-underline hover:underline">Consulta de Datos</a><br><span class="text-sm text-muted">Búsqueda y filtrado de datos históricos con comparativas y descarga de reportes.</span></li>
+        <li><a href="reporte-fallas.html" class="font-semibold text-primary no-underline hover:underline">Reporte de Fallas</a><br><span class="text-sm text-muted">Registro de fallas de equipos e historial de reportes.</span></li>
+        <li><a href="lecturas-manuales.html" class="font-semibold text-primary no-underline hover:underline">Lecturas Manuales</a><br><span class="text-sm text-muted">Formulario para registro manual de lecturas de sensores desde terreno.</span></li>
+        <li><a href="alertas.html" class="font-semibold text-primary no-underline hover:underline">Alertas</a><br><span class="text-sm text-muted">Historial de alertas generadas cuando las lecturas superan los umbrales configurados.</span></li>
+        <li><a href="login.html" class="font-semibold text-primary no-underline hover:underline">Inicio de Sesión</a><br><span class="text-sm text-muted">Acceso seguro al sistema con correo y contraseña.</span></li>
+      </ul>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+  </footer>
+
+  <script type="module">
+    import Alpine from '/src/js/main.js';
+    import { protectPage } from '/src/js/auth.js';
+    protectPage();
+    Alpine.start();
+  </script>
+</body>
+</html>

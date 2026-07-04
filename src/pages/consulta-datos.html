@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Datos - SMAI</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Navegación principal"></nav>
+  </header>
+  <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="consultaApp()">
+    <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
+      <h2 class="text-lg font-semibold">Consulta de Datos</h2>
+      <div class="flex gap-2">
+        <button class="btn-success" @click="exportPDF('consulta')" data-tooltip="Descargue un PDF con los datos filtrados"><span aria-hidden="true">📄</span> PDF</button>
+        <button class="btn-primary" @click="exportExcel('consulta')" data-tooltip="Descargue un Excel con los datos filtrados"><span aria-hidden="true">📊</span> Excel</button>
+      </div>
+    </div>
+
+    <div class="context-bar" id="contextConsulta">
+      Panel de consulta de datos históricos. Use los filtros para refinar la búsqueda, exporte los resultados o compare datos entre zonas.
+    </div>
+
+    <fieldset class="card-modern mb-6">
+      <legend class="text-base font-semibold mb-3 px-1">Filtros de Búsqueda</legend>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <div>
+          <label for="filtroFechaDesde" class="block mb-1 font-semibold text-sm">Fecha desde</label>
+          <input type="date" id="filtroFechaDesde" class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" x-model="filtros.desde">
+        </div>
+        <div>
+          <label for="filtroFechaHasta" class="block mb-1 font-semibold text-sm">Fecha hasta</label>
+          <input type="date" id="filtroFechaHasta" class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" x-model="filtros.hasta">
+        </div>
+        <div>
+          <label for="filtroUbicacion" class="block mb-1 font-semibold text-sm">Ubicación</label>
+          <select id="filtroUbicacion" class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" x-model="filtros.ubicacion">
+            <option value="">Todas</option>
+            <option value="torre-norte">Torre Norte</option>
+            <option value="rio-principal">Río Principal</option>
+            <option value="centro-urbano">Centro Urbano</option>
+            <option value="zona-industrial">Zona Industrial</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button class="btn-primary" @click="aplicarFiltros()" data-tooltip="Filtre los datos según los criterios seleccionados">🔍 Aplicar filtros</button>
+        <button class="btn-ghost" @click="limpiarFiltros()" data-tooltip="Borre todos los filtros y muestre todos los registros">🧹 Limpiar</button>
+      </div>
+    </fieldset>
+
+    <div class="card-modern mb-6">
+      <h2 class="text-base font-semibold mb-3">Datos Filtrados</h2>
+      <p class="text-xs text-muted mb-3" x-text="`Mostrando ${datosFiltrados.length} de ${lecturas.length} registros.`"></p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Sensor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ubicación</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Notas</th></tr>
+          </thead>
+          <tbody>
+            <template x-if="datosFiltrados.length === 0">
+              <tr><td colspan="5" class="px-3 py-2.5 text-center text-muted">No se encontraron registros. Ajuste los filtros o cargue lecturas.</td></tr>
+            </template>
+            <template x-for="(l, idx) in datosFiltrados" :key="idx">
+              <tr>
+                <td class="px-3 py-2.5 border-b border-border" x-text="formatearFecha(l.fecha)"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="l.sensor"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="l.valor + ' ' + (l.unidad || '')"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="l.ubicacion || '—'"></td>
+                <td class="px-3 py-2.5 border-b border-border text-xs" x-text="l.notas || '—'"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-modern mb-6">
+      <h2 class="text-base font-semibold mb-3">Comparativa entre Zonas</h2>
+      <div class="context-bar">
+        Esta tabla muestra los promedios de cada parámetro por zona de monitoreo.
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Zona</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Temperatura</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Humedad</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Calidad del Aire</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ruido</th></tr>
+          </thead>
+          <tbody>
+            <template x-for="(z, idx) in comparativa" :key="idx">
+              <tr>
+                <td class="px-3 py-2.5 border-b border-border font-semibold" x-text="ubicNames[z.zona] || z.zona"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="z.temp !== null ? z.temp+' °C' : '—'"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="z.humedad !== null ? z.humedad+' %' : '—'"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="z.aqi !== null ? z.aqi+' AQI' : '—'"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="z.ruido !== null ? z.ruido+' dB' : '—'"></td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <h2 class="text-base font-semibold mb-3">🤖 Análisis de Datos con IA</h2>
+      <div class="context-bar">
+        Genera un análisis textual automático basado en los datos filtrados.
+      </div>
+      <button class="btn-primary mb-3" @click="analizarIA()">Generar análisis</button>
+      <div id="analisisIA" class="bg-gray-50 p-4 rounded-lg text-sm min-h-[60px]" :aria-busy="analizando ? 'true' : 'false'" x-text="analisisTexto">Presione "Generar análisis" para obtener un resumen inteligente.</div>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script type="module">
+    import Alpine from '/src/js/main.js';
+    import { getFromLS, saveToLS, showNotification } from '/src/js/utils.js';
+    import { protectPage } from '/src/js/auth.js';
+
+    protectPage();
+
+    const ubicNames = { 'torre-norte': 'Torre Norte', 'rio-principal': 'Río Principal', 'centro-urbano': 'Centro Urbano', 'zona-industrial': 'Zona Industrial' };
+    const sensorUbic = { 'ST-001': 'torre-norte', 'SH-002': 'rio-principal', 'SA-003': 'centro-urbano', 'SR-004': 'zona-industrial' };
+
+    Alpine.data('consultaApp', () => ({
+      lecturas: [],
+      datosFiltrados: [],
+      filtros: { desde: '', hasta: '', ubicacion: '' },
+      analizando: false,
+      analisisTexto: 'Presione "Generar análisis" para obtener un resumen inteligente.',
+      ubicNames,
+
+      init() {
+        this.lecturas = getFromLS('smai_lecturas');
+        this.datosFiltrados = [...this.lecturas];
+        const saved = sessionStorage.getItem('smai_filtros_consulta');
+        if (saved) {
+          try { this.filtros = JSON.parse(saved); this.aplicarFiltros(); } catch(e) {}
+        }
+      },
+
+      formatearFecha(f) { return new Date(f).toLocaleDateString('es-CL'); },
+
+      aplicarFiltros() {
+        sessionStorage.setItem('smai_filtros_consulta', JSON.stringify(this.filtros));
+        let datos = [...this.lecturas];
+        if (this.filtros.desde) datos = datos.filter(l => new Date(l.fecha) >= new Date(this.filtros.desde));
+        if (this.filtros.hasta) datos = datos.filter(l => new Date(l.fecha) <= new Date(this.filtros.hasta + 'T23:59:59'));
+        if (this.filtros.ubicacion) datos = datos.filter(l => (sensorUbic[l.sensor] || '') === this.filtros.ubicacion);
+        this.datosFiltrados = datos;
+        showNotification('Filtros aplicados: ' + datos.length + ' registros.', 'success');
+      },
+
+      limpiarFiltros() {
+        this.filtros = { desde: '', hasta: '', ubicacion: '' };
+        sessionStorage.removeItem('smai_filtros_consulta');
+        this.datosFiltrados = [...this.lecturas];
+        showNotification('Filtros limpiados.', 'success');
+      },
+
+      get comparativa() {
+        const zonas = ['torre-norte', 'rio-principal', 'centro-urbano', 'zona-industrial'];
+        const params = { 'ST-001': 'temp', 'SH-002': 'humedad', 'SA-003': 'aqi', 'SR-004': 'ruido' };
+        const lectPorZona = {};
+        zonas.forEach(z => {
+          const lects = this.lecturas.filter(l => sensorUbic[l.sensor] === z);
+          if (lects.length === 0) {
+            lectPorZona[z] = { temp: null, humedad: null, aqi: null, ruido: null };
+            return;
+          }
+          const grupos = {};
+          lects.forEach(l => {
+            const p = params[l.sensor];
+            if (!p) return;
+            if (!grupos[p]) grupos[p] = [];
+            grupos[p].push(l.valor);
+          });
+          const prom = p => grupos[p] ? (grupos[p].reduce((a,b) => a + b, 0) / grupos[p].length).toFixed(1) : null;
+          lectPorZona[z] = { temp: prom('temp'), humedad: prom('humedad'), aqi: prom('aqi'), ruido: prom('ruido'), zona: z };
+        });
+        return Object.values(lectPorZona);
+      },
+
+      analizarIA() {
+        const datos = this.datosFiltrados;
+        if (datos.length === 0) {
+          this.analisisTexto = 'No hay datos para analizar. Ajuste los filtros.';
+          return;
+        }
+        this.analizando = true;
+        this.analisisTexto = 'Analizando...';
+        setTimeout(() => {
+          const sensoresU = [...new Set(datos.map(l => l.sensor))];
+          const total = datos.length;
+          const valores = datos.map(l => l.valor);
+          const prom = (valores.reduce((a,b) => a + b, 0) / valores.length).toFixed(2);
+          const min = Math.min(...valores);
+          const max = Math.max(...valores);
+          const alertas = getFromLS('smai_alertas');
+          const alertasPeriodo = alertas.filter(a => datos.some(d => d.fecha.slice(0,10) === a.fecha.slice(0,10)));
+          this.analisisTexto = `📊 Análisis de ${total} lecturas (${sensoresU.length} sensores). Promedio: ${prom}. Rango: ${min} — ${max}. Alertas en el período: ${alertasPeriodo.length}.`;
+          this.analizando = false;
+        }, 500);
+      }
+    }));
+
+    Alpine.start();
+  </script>
+</body>
+</html>

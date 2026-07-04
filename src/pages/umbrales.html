@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Umbrales - SMAI</title>
+  <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Navegación principal"></nav>
+  </header>
+  <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="umbralesApp()">
+    <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
+      <h2 class="text-lg font-semibold">Gestión de Umbrales de Alerta</h2>
+      <div class="flex gap-2">
+        <button class="btn-primary" @click="abrirFormulario()" data-tooltip="Abra el formulario para configurar un nuevo límite de alerta">+ Nuevo umbral</button>
+        <button class="btn-success" @click="sugerirUmbrales()" data-tooltip="Analice las lecturas y sugiera valores óptimos">🤖 Sugerir valores</button>
+      </div>
+    </div>
+
+    <div class="context-bar">
+      Los umbrales definen los límites superior e inferior aceptables para cada variable ambiental. Cuando una lectura supera estos límites, el sistema genera automáticamente una alerta.
+    </div>
+
+    <div class="flex gap-4 flex-wrap mb-6">
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalUmbrales">0</div><div class="stat-label">Umbrales configurados</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="paramsCubiertos">0</div><div class="stat-label">Parámetros cubiertos</div></div>
+    </div>
+
+    <div class="card-modern mb-6" x-show="showForm" x-cloak>
+      <h2 class="text-base font-semibold mb-4" x-text="editando !== null ? 'Editar Umbral' : 'Nuevo Umbral'"></h2>
+      <form @submit.prevent="guardar()">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="parametro" class="block mb-1 font-semibold text-sm">Parámetro</label>
+            <select id="parametro" x-model="form.parametro" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+              <option value="">Seleccione...</option>
+              <option value="temperatura">Temperatura (°C)</option>
+              <option value="humedad">Humedad (%)</option>
+              <option value="aqi">Calidad del Aire (AQI)</option>
+              <option value="ruido">Ruido (dB)</option>
+            </select>
+          </div>
+          <div>
+            <label for="ubicacion" class="block mb-1 font-semibold text-sm">Ubicación</label>
+            <select id="ubicacion" x-model="form.ubicacion" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+              <option value="">Seleccione...</option>
+              <option value="torre-norte">Torre Norte</option>
+              <option value="rio-principal">Río Principal</option>
+              <option value="centro-urbano">Centro Urbano</option>
+              <option value="zona-industrial">Zona Industrial</option>
+            </select>
+          </div>
+          <div>
+            <label for="minimo" class="block mb-1 font-semibold text-sm">Valor mínimo</label>
+            <input type="number" id="minimo" step="any" placeholder="Ej: 0" x-model="form.minimo" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+          </div>
+          <div>
+            <label for="maximo" class="block mb-1 font-semibold text-sm">Valor máximo</label>
+            <input type="number" id="maximo" step="any" placeholder="Ej: 100" x-model="form.maximo" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
+          </div>
+        </div>
+        <div class="flex gap-2 mt-4">
+          <button type="submit" class="btn-success" data-tooltip="Guarde el umbral configurado">Guardar</button>
+          <button type="button" class="btn-ghost" @click="cerrarFormulario()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-modern">
+      <h2 class="text-base font-semibold mb-4">Umbrales Configurados</h2>
+      <table class="w-full text-sm">
+        <thead>
+          <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Parámetro</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ubicación</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Mínimo</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Máximo</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Estado</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Acciones</th></tr>
+        </thead>
+        <tbody>
+          <template x-if="umbrales.length === 0">
+            <tr><td colspan="6" class="px-3 py-2.5 text-center text-muted">No hay umbrales configurados. Presione "+ Nuevo umbral" para agregar uno.</td></tr>
+          </template>
+          <template x-for="(u, idx) in umbrales" :key="idx">
+            <tr>
+              <td class="px-3 py-2.5 border-b border-border" x-text="paramNames[u.parametro] || u.parametro"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="ubicNames[u.ubicacion] || u.ubicacion"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="u.minimo"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="u.maximo"></td>
+              <td class="px-3 py-2.5 border-b border-border"><span class="badge badge-success">Activo</span></td>
+              <td class="px-3 py-2.5 border-b border-border">
+                <button class="btn-warning text-xs px-2.5 py-1" @click="editar(idx)">Editar</button>
+                <button class="btn-danger text-xs px-2.5 py-1" @click="eliminar(idx)">Eliminar</button>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+  </footer>
+
+  <script type="module">
+    import Alpine from '/src/js/main.js';
+    import { getFromLS, saveToLS, showNotification, confirmAction } from '/src/js/utils.js';
+    import { protectPage } from '/src/js/auth.js';
+
+    protectPage();
+
+    const paramNames = { temperatura: 'Temperatura (°C)', humedad: 'Humedad (%)', aqi: 'Calidad del Aire (AQI)', ruido: 'Ruido (dB)' };
+    const ubicNames = { 'torre-norte': 'Torre Norte', 'rio-principal': 'Río Principal', 'centro-urbano': 'Centro Urbano', 'zona-industrial': 'Zona Industrial' };
+
+    Alpine.data('umbralesApp', () => ({
+      umbrales: [],
+      showForm: false,
+      editando: null,
+      form: { parametro: '', ubicacion: '', minimo: '', maximo: '' },
+      paramNames,
+      ubicNames,
+
+      get totalUmbrales() { return this.umbrales.length; },
+      get paramsCubiertos() {
+        const p = {};
+        this.umbrales.forEach(u => p[u.parametro] = true);
+        return Object.keys(p).length;
+      },
+
+      init() { this.umbrales = getFromLS('smai_umbrales'); },
+
+      abrirFormulario() {
+        this.editando = null;
+        this.form = { parametro: '', ubicacion: '', minimo: '', maximo: '' };
+        this.showForm = true;
+        this.$nextTick(() => document.getElementById('parametro')?.focus());
+      },
+
+      cerrarFormulario() { this.showForm = false; this.editando = null; },
+
+      guardar() {
+        const f = this.form;
+        if (!f.parametro) { showNotification('Seleccione un parámetro.', 'error'); return; }
+        if (!f.ubicacion) { showNotification('Seleccione una ubicación.', 'error'); return; }
+        if (!f.minimo) { showNotification('Ingrese el valor mínimo.', 'error'); return; }
+        if (!f.maximo) { showNotification('Ingrese el valor máximo.', 'error'); return; }
+        if (parseFloat(f.minimo) >= parseFloat(f.maximo)) {
+          showNotification('El valor mínimo debe ser menor al máximo.', 'error'); return;
+        }
+        const datos = { parametro: f.parametro, ubicacion: f.ubicacion, minimo: f.minimo, maximo: f.maximo };
+        if (this.editando !== null) {
+          this.umbrales[this.editando] = datos;
+          showNotification('Umbral actualizado.', 'success');
+        } else {
+          this.umbrales.push(datos);
+          showNotification('Umbral guardado.', 'success');
+        }
+        saveToLS('smai_umbrales', this.umbrales);
+        this.cerrarFormulario();
+      },
+
+      editar(idx) {
+        const item = this.umbrales[idx];
+        if (!item) return;
+        this.editando = idx;
+        this.form = { ...item };
+        this.showForm = true;
+      },
+
+      eliminar(idx) {
+        confirmAction('Eliminar umbral', '¿Está seguro de eliminar este umbral?').then(r => {
+          if (r) {
+            this.umbrales.splice(idx, 1);
+            saveToLS('smai_umbrales', this.umbrales);
+            showNotification('Umbral eliminado.', 'success');
+          }
+        });
+      },
+
+      sugerirUmbrales() {
+        const lecturas = getFromLS('smai_lecturas');
+        if (lecturas.length < 3) {
+          showNotification('Se necesitan al menos 3 lecturas para sugerir valores.', 'error');
+          return;
+        }
+        const paramMap = { 'ST-001': 'temperatura', 'SH-002': 'humedad', 'SA-003': 'aqi', 'SR-004': 'ruido' };
+        const paramUnidad = { temperatura: '°C', humedad: '%', aqi: 'AQI', ruido: 'dB' };
+        const paramNombre = { temperatura: 'Temperatura', humedad: 'Humedad', aqi: 'Calidad del Aire', ruido: 'Ruido' };
+        const grupos = {};
+        lecturas.forEach(l => {
+          const p = paramMap[l.sensor];
+          if (!p) return;
+          if (!grupos[p]) grupos[p] = [];
+          grupos[p].push(l.valor);
+        });
+        const sugerencias = Object.keys(grupos).map(p => {
+          const vals = grupos[p];
+          if (vals.length < 2) return null;
+          const prom = vals.reduce((a,b) => a + b, 0) / vals.length;
+          const desv = Math.sqrt(vals.reduce((a,b) => a + (b - prom) ** 2, 0) / vals.length);
+          const minSug = Math.round((prom - 2 * desv) * 10) / 10;
+          const maxSug = Math.round((prom + 2 * desv) * 10) / 10;
+          return paramNombre[p] + ': ' + minSug + ' - ' + maxSug + ' ' + (paramUnidad[p] || '');
+        }).filter(Boolean);
+        if (sugerencias.length === 0) {
+          showNotification('No hay suficientes datos para sugerir umbrales.', 'error');
+          return;
+        }
+        confirmAction('Umbrales sugeridos por IA', '📊 Sugerencias basadas en ' + lecturas.length + ' lecturas:\n' + sugerencias.join('\n')).then(() => {});
+      }
+    }));
+
+    Alpine.start();
+  </script>
+</body>
+</html>
