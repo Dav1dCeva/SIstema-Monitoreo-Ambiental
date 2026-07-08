@@ -1,40 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:13.000
-Tomas aéreas de selvas tropicales, montañas nevadas, sabanas y desiertos de Colombia. Aparece el título del video.
+00:00:00.000 --> 00:00:10.000
+Logo de SMAI en pantalla. Transición a la página de inicio de sesión con campos de correo y contraseña, y un selector desplegable de roles.
 
-00:00:13.000 --> 00:00:27.000
-Mapa de Colombia con la región de Cundinamarca resaltada, mostrando el área rural de Bogotá y los límites de la Corporación Autónoma Regional.
+00:00:10.000 --> 00:00:18.000
+El cursor escribe "admin@smai.cl" en el campo de correo. Selecciona "Administrador" del menú desplegable. Hace clic en el botón "Ingresar". La pantalla cambia al Dashboard.
 
-00:00:27.000 --> 00:00:43.000
-Gráfico animado que muestra las 33 corporaciones autónomas regionales distribuidas en el territorio colombiano, con la CAR de Cundinamarca destacada.
+00:00:18.000 --> 00:00:32.000
+El Dashboard muestra cuatro tarjetas con estadísticas: total de lecturas, sensores activos, alertas vigentes y días con datos. Debajo, una grilla con cuatro sensores: ST-001 Temperatura en verde, SH-002 Humedad en verde, SA-003 Calidad del Aire en rojo, SR-004 Ruido en verde. Más abajo, un gráfico de líneas con tendencia semanal.
 
-00:00:43.000 --> 00:00:53.000
-Imágenes de fauna y flora colombiana: pájaros, mariposas y vegetación nativa. Texto en pantalla: "Compromisos y estrategias nacionales".
+00:00:32.000 --> 00:00:42.000
+Navegación al módulo de Umbrales. Se ve una tabla con umbrales existentes. El cursor hace clic en el botón "+ Nuevo umbral". Se abre un formulario. Se selecciona "Temperatura" y "Torre Norte", se escribe 15 en mínimo y 35 en máximo.
 
-00:00:53.000 --> 00:01:08.000
-Mapa interactivo con 42 marcadores de áreas protegidas en Cundinamarca. Barra de información muestra "22 000 hectáreas protegidas".
+00:00:42.000 --> 00:00:50.000
+Clic en "Guardar". El nuevo umbral aparece en la tabla con los valores ingresados.
 
-00:01:08.000 --> 00:01:22.000
-Animación de íconos de sensores, satélites, cámaras y aplicaciones conectándose a un centro de datos. Contador muestra "12 millones de datos/año".
+00:00:50.000 --> 00:01:04.000
+Pantalla de Consulta de Datos. Se selecciona fecha de la última semana y ubicación "Torre Norte" en los filtros. Clic en "Filtrar". Aparece una tabla con resultados. Clic en el botón "PDF". Se descarga un archivo.
 
-00:01:22.000 --> 00:01:35.000
-Interfaz de la Infraestructura de Datos Espaciales Ambientales IDCAR, mostrando capas de información geográfica organizadas por categorías.
+00:01:04.000 --> 00:01:18.000
+Pantalla de Alertas con una tabla de historial. Las filas se muestran con colores según gravedad. Clic en "Simular alerta". Una nueva fila aparece en la tabla con una alerta recién generada.
 
-00:01:35.000 --> 00:01:50.000
-Diagrama de flujo que muestra departamentos aislados antes, y luego conectados a través de IDCAR con tecnología Hexagon.
-
-00:01:50.000 --> 00:01:59.000
-Captura de pantalla de un mapa web interactivo con múltiples capas temáticas activadas.
-
-00:01:59.000 --> 00:02:09.000
-Interfaz de ERDAS APOLLO mostrando el proceso de importación y catalogación de datos satelitales y geoespaciales.
-
-00:02:09.000 --> 00:02:22.000
-Demostración de un gemelo digital 3D del territorio con mediciones y análisis espacial. Panel de Map Enterprise visible en la interfaz.
-
-00:02:22.000 --> 00:02:32.000
-Panel geoanalítico con gráficos de barras, mapas de calor y métricas ambientales actualizadas en tiempo real.
-
-00:02:32.000 --> 00:02:49.000
-Tomas aéreas de bosques y cuerpos de agua. Texto final: "Hexagon — Soluciones para un futuro sostenible". Créditos del video.
+00:01:18.000 --> 00:01:35.000
+Fundido a negro. Aparece el logo de SMAI centrado con el texto "SMAI — Monitoreo Inteligente".

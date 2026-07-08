@@ -1,40 +1,25 @@
 WEBVTT
 
-00:00:00.000 --> 00:00:13.000
-Desde selvas tropicales y montañas nevadas hasta sabanas y desiertos, Colombia es el segundo país más biodiverso del planeta, requiriendo tecnología e información accionable para su protección y conservación.
+00:00:00.000 --> 00:00:10.000
+SMAI es el Sistema de Monitoreo Ambiental Inteligente. Una plataforma web para capturar, monitorear y analizar datos ambientales en tiempo real.
 
-00:00:13.000 --> 00:00:27.000
-A la cabeza de estos esfuerzos se encuentra la Corporación Autónoma Regional de Cundinamarca, la principal autoridad ambiental del país y responsable por proteger más de 18 000 km² que incluyen el área rural de Bogotá.
+00:00:10.000 --> 00:00:18.000
+Inicia sesión con tu correo y selecciona tu rol. Como administrador accedes al Dashboard, el centro de control del sistema.
 
-00:00:27.000 --> 00:00:43.000
-La Corporación Autónoma Regional es la más importante de estas 33 corporaciones, no solo por la ubicación geográfica en el centro del país, sino porque en su territorio albergan cerca de 12 millones de personas que habitan allí.
+00:00:18.000 --> 00:00:32.000
+Aquí ves un resumen general: total de lecturas, sensores activos, alertas vigentes. Cada sensor muestra su última lectura y estado. El gráfico semanal ayuda a detectar patrones.
 
-00:00:43.000 --> 00:00:53.000
-En general tenemos una serie de compromisos y estrategias desde el sistema nacional ambiental para cuidar y proteger esta importante biodiversidad.
+00:00:32.000 --> 00:00:42.000
+En Umbrales configuras los límites de alerta para cada sensor. Presiona '+ Nuevo umbral', selecciona el parámetro, ingresa mínimo y máximo, y guarda.
 
-00:00:53.000 --> 00:01:08.000
-Quizás la más importante de ellas es tener hoy 42 áreas protegidas declaradas en nuestro territorio, 22 000 hectáreas aproximadamente que están hoy bajo una categoría de protección.
+00:00:42.000 --> 00:00:50.000
+El sistema validará automáticamente las lecturas contra estos valores.
 
-00:01:08.000 --> 00:01:22.000
-El acceso a datos procesables permite a la corporación ejecutar su misión utilizando sensores, imágenes satelitales, cámaras, aplicaciones y sistemas para recopilar, analizar y monitorear más de 12 millones de datos por año.
+00:00:50.000 --> 00:01:04.000
+Consulta datos históricos con filtros por fecha, parámetro y ubicación. Los resultados se muestran en una tabla dinámica. Exporta a PDF o Excel con un solo clic para tus reportes.
 
-00:01:22.000 --> 00:01:35.000
-Para aprovechar al máximo estos datos, la corporación lanzó la primera infraestructura de datos espaciales ambientales de Latinoamérica para organizar y estandarizar la información para un mayor impacto.
+00:01:04.000 --> 00:01:18.000
+El módulo de Alertas registra cada vez que una lectura supera los umbrales configurados. Puedes simular una alerta para probar el sistema.
 
-00:01:35.000 --> 00:01:50.000
-Antes cada área generaba una serie de información, las mismas áreas no tenían cómo comunicarse entre sí. Hoy, gracias a IDCAR con la tecnología de Hexagon, hemos podido integrarlos, procesarlos.
-
-00:01:50.000 --> 00:01:59.000
-Contamos también con la posibilidad de tener mapas web, de tener una información que hoy nos va a permitir ser más eficientes como autoridad ambiental.
-
-00:01:59.000 --> 00:02:09.000
-Con ERDAS APOLLO de Hexagon, diferentes tipos de datos se importan, catalogan, conectan y almacenan agilizando su acceso e intercambio.
-
-00:02:09.000 --> 00:02:22.000
-A través de un geoportal web creado con Map Enterprise y capacidades avanzadas de visualización 3D de la plataforma Luciat, los usuarios pueden crear gemelos digitales, ejecutar análisis espaciales y visualizar información accionable.
-
-00:02:22.000 --> 00:02:32.000
-Además, los datos dinámicos se pueden explorar y visualizar a través de paneles geoanalíticos, lo que permite monitorear y analizar información en tiempo real.
-
-00:02:32.000 --> 00:02:49.000
-Tenemos el ideal que en la próxima década sigamos avanzando, ojalá de la mano de Hexagon y que podamos contar con información satelital, con información geográfica en tiempo real sobre nuestras coberturas naturales, sobre los impactos que las actividades productivas tienen en el territorio.
+00:01:18.000 --> 00:01:35.000
+SMAI: datos accionables para un futuro sostenible.
