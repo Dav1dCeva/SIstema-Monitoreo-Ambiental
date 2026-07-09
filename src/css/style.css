@@ -418,6 +418,10 @@ body.reduce-flashes *::after { animation-duration: 0s !important; }
   background: rgba(255,255,255,.25);
   outline: 2px solid #ff0;
 }
+#reader-bar button.active {
+  background: #14b8a6;
+  color: #fff;
+}
 .reader-speed-label {
   @apply flex items-center gap-1 text-xs text-white/70 whitespace-nowrap;
 }

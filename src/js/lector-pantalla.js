@@ -10,7 +10,9 @@ let state = {
   currentIndex: -1,
   elements: [],
   utterance: null,
-  highlightEl: null
+  highlightEl: null,
+  hover: false,
+  hoverTimeout: null
 };
 
 function getSpeed() {
@@ -221,6 +223,7 @@ function buildReaderUI() {
         <input type="range" id="reader-speed" min="0.3" max="2" step="0.1" value="${getSpeed()}" aria-label="Velocidad de lectura">
         <span id="reader-speed-val">${getSpeed().toFixed(1)}x</span>
       </label>
+      <button id="reader-hover" aria-label="Leer al pasar el mouse" aria-pressed="false" title="Leer al pasar el mouse">🖱 Leer hover</button>
       <button id="reader-page" aria-label="Leer página completa">📄 Leer página</button>
       <button id="reader-selection" aria-label="Leer selección">📝 Leer selección</button>
       <span id="reader-status" aria-live="polite" role="status" class="sr-only"></span>
@@ -241,6 +244,7 @@ function initReaderUIEvents() {
     state.elements = getReadableElements();
     readPrev();
   });
+  document.getElementById('reader-hover').addEventListener('click', toggleHoverMode);
   document.getElementById('reader-page').addEventListener('click', readPage);
   document.getElementById('reader-selection').addEventListener('click', readSelection);
 
@@ -307,6 +311,41 @@ function clickToRead(e) {
   }
 }
 
+function hoverToRead(e) {
+  if (!state.enabled || !state.hover) return;
+  clearTimeout(state.hoverTimeout);
+  state.hoverTimeout = setTimeout(() => {
+    let el = e.target.closest(READABLE_TAGS.join(','));
+    if (!el || !el.textContent.trim()) return;
+    if (el.closest('#reader-bar') || el.closest('#accesibilidad-menu')) return;
+    const idx = state.elements.findIndex(item => item.el === el);
+    if (idx >= 0) {
+      readElement(idx);
+    } else {
+      const role = getRole(el);
+      const msg = buildElementText(el, role);
+      highlight(el);
+      updateStatus(msg);
+      speakNow(msg);
+    }
+  }, 400);
+}
+
+export function toggleHoverMode() {
+  state.hover = !state.hover;
+  const btn = document.getElementById('reader-hover');
+  if (btn) {
+    btn.classList.toggle('active', state.hover);
+    btn.setAttribute('aria-pressed', state.hover);
+  }
+  if (state.hover) {
+    document.addEventListener('mouseover', hoverToRead);
+  } else {
+    document.removeEventListener('mouseover', hoverToRead);
+    clearTimeout(state.hoverTimeout);
+  }
+}
+
 export function enableReader() {
   if (state.enabled) return;
   state.enabled = true;
@@ -322,6 +361,9 @@ export function enableReader() {
   state.elements = getReadableElements();
 
   document.addEventListener('click', clickToRead);
+  if (state.hover) {
+    document.addEventListener('mouseover', hoverToRead);
+  }
 
   window.speechSynthesis.cancel();
   window.speechSynthesis.getVoices();
@@ -346,6 +388,8 @@ export function disableReader() {
   const bar = document.getElementById('reader-bar');
   if (bar) bar.style.display = 'none';
   document.removeEventListener('click', clickToRead);
+  document.removeEventListener('mouseover', hoverToRead);
+  clearTimeout(state.hoverTimeout);
   if (state.highlightEl) {
     state.highlightEl.style.outline = '';
     state.highlightEl.style.backgroundColor = '';
@@ -360,6 +404,7 @@ export function isReaderEnabled() {
 window.SMAI = window.SMAI || {};
 SMAI.enableReader = enableReader;
 SMAI.disableReader = disableReader;
+SMAI.toggleHoverMode = toggleHoverMode;
 
 export function initReader() {
   const page = window.location.pathname.split('/').pop() || 'index.html';
