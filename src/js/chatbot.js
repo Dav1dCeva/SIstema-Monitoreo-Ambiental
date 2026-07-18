@@ -1,74 +1,99 @@
+const t = (key, params = {}) => {
+  const fn = window.SMAI?.t;
+  return fn ? fn(key, params) : key;
+};
+
+function lang() { return window.SMAI?.getLang?.() || 'es'; }
+function inWord() { return lang() === 'en' ? 'in' : 'en'; }
+
 const INTENTS = {
   saludo: [
-    /\b(hola|buenos\s*(d[ií]as|tardes|noches)|hey|saludos|qu[eé]\s*tal|buen\s*d[ií]a)\b/i
+    /\b(hola|buenos\s*(d[ií]as|tardes|noches)|hey|saludos|qu[eé]\s*tal|buen\s*d[ií]a)\b/i,
+    /\b(hi|hello|good\s*(morning|afternoon|evening)|hey|greetings|what'?s\s*up|howdy)\b/i
   ],
   temperatura: [
     /\btemperatura(s)?\b/i, /\b(temp|t[eé]rmico)\b/i, /\b(c[aá]l(ido|iente|or)?|fr[ií]o)\b/i,
-    /\bst[- ]?001\b/i
+    /\bst[- ]?001\b/i,
+    /\b(temperature|thermal|hot|cold)\b/i
   ],
   humedad: [
-    /\bhumedad(es)?\b/i, /\bh[uú]medo\b/i, /\bsh[- ]?002\b/i
+    /\bhumedad(es)?\b/i, /\bh[uú]medo\b/i, /\bsh[- ]?002\b/i,
+    /\b(humidity|humid|damp|moist)\b/i
   ],
   calidad_aire: [
     /\b(calidad\s*del?\s*aire|aire|aqi|contaminaci[oó]n|part[ií]culas)\b/i,
-    /\bsa[- ]?003\b/i
+    /\bsa[- ]?003\b/i,
+    /\b(air\s*quality|air|aqi|pollution|particles)\b/i
   ],
   ruido: [
-    /\bruido(s)?\b/i, /\b(decibelios|db|sonido|ruidoso)\b/i, /\bsr[- ]?004\b/i
+    /\bruido(s)?\b/i, /\b(decibelios|db|sonido|ruidoso)\b/i, /\bsr[- ]?004\b/i,
+    /\b(noise|noises|decibels|db|sound|loud)\b/i
   ],
   alertas: [
     /\balerta(s)?\b/i, /\balarma(s)?\b/i, /\bnotificaci[oó]n(es)?\b/i,
-    /\bactiv[oa]\b.*\b(alerta|alarma)\b/i
+    /\bactiv[oa]\b.*\b(alerta|alarma)\b/i,
+    /\b(alerts?|alarms?|notifications?)\b/i
   ],
   umbrales: [
-    /\bumbral(es)?\b/i, /\bl[ií]mite(s)?\b/i, /\brango(s)?\b/i, /\bconfiguraci[oó]n\b/i
+    /\bumbral(es)?\b/i, /\bl[ií]mite(s)?\b/i, /\brango(s)?\b/i, /\bconfiguraci[oó]n\b/i,
+    /\b(thresholds?|limits?|ranges?|configuration)\b/i
   ],
   promedio: [
-    /\bpromedio\b/i, /\bmedia(s)?\b/i, /\bmedi[oó]\b/i, /\bprom\b/i, /\bvalor\s*medio\b/i
+    /\bpromedio\b/i, /\bmedia(s)?\b/i, /\bmedi[oó]\b/i, /\bprom\b/i, /\bvalor\s*medio\b/i,
+    /\b(average|mean|median|avg)\b/i
   ],
   ultimas_lecturas: [
     /\b[uú]ltimas?\s*lecturas?\b/i, /\breciente(s)?\b/i, /\b[uú]ltimos?\s*datos?\b/i,
-    /\bnuevas?\s*lecturas?\b/i
+    /\bnuevas?\s*lecturas?\b/i,
+    /\b(latest\s*readings?|recent|last\s*data|new\s*readings?)\b/i
   ],
   reportes: [
     /\breporte(s)?\b/i, /\bfalla(s)?\b/i, /\bpendiente(s)?\b/i,
-    /\bproblema(s)?\b/i, /\bincidente(s)?\b/i
+    /\bproblema(s)?\b/i, /\bincidente(s)?\b/i,
+    /\b(reports?|failures?|pending|problems?|incidents?)\b/i
   ],
   mantenimientos: [
     /\bmantenimiento(s)?\b/i, /\bmanto(s)?\b/i, /\brevisi[oó]n(es)?\b/i,
-    /\bcalibraci[oó]n\b/i
+    /\bcalibraci[oó]n\b/i,
+    /\b(maintenances?|upkeep|inspections?|calibration)\b/i
   ],
   sensores: [
     /\bsensor(es)?\b/i, /\bdispositivo(s)?\b/i, /\b(equipo|equipos)\b/i,
-    /\bcu[aá]ntos?\s*sensores\b/i
+    /\bcu[aá]ntos?\s*sensores\b/i,
+    /\b(sensors?|devices?|equipment)\b/i
   ],
   estado_general: [
     /\bresumen\b/i, /\bestado\s*general\b/i, /\bc[oó]mo\s*est[aá]\b/i,
-    /\bpanorama\b/i, /\bsistema\b/i
+    /\bpanorama\b/i, /\bsistema\b/i,
+    /\b(overview|general\s*status|how'?s\s*everything|status|system)\b/i
   ],
   ayuda: [
     /\b(qu[eé]\s*puedes\s*hacer|ayuda|comandos|qu[eé]\s*haces|funciones)\b/i,
-    /\bc[oó]mo\s*funciona\b/i
+    /\bc[oó]mo\s*funciona\b/i,
+    /\b(what\s*can\s*you\s*do|help|commands|what\s*do\s*you\s*do|functions|how\s*does\s*it\s*work)\b/i
   ],
   despedida: [
     /\bgracias\b/i, /\badi[oós]\b/i, /\bchao?\b/i, /\bhasta\s*luego\b/i,
-    /\bbye\b/i, /\bnos\s*vemos\b/i
+    /\bbye\b/i, /\bnos\s*vemos\b/i,
+    /\b(thanks|thank\s*you|bye|goodbye|see\s*you|farewell)\b/i
   ],
   login: [
     /\binicio\s*de\s*sesi[oó]n\b/i, /\biniciar\s*sesi[oó]n\b/i, /\bingresar\b/i,
-    /\blog(in|earse)\b/i, /\bacceder\b/i, /\bautenticar(se)?\b/i
+    /\blog(in|earse)\b/i, /\bacceder\b/i, /\bautenticar(se)?\b/i,
+    /\b(log\s*in|login|sign\s*in|enter|access|authenticate)\b/i
   ],
   logout: [
     /\bcerrar\s*sesi[oó]n\b/i, /\blogout\b/i, /\bsalir\b/i, /\bdesconectar(se)?\b/i,
-    /\bcambio\s*de\s*usuario\b/i, /\bcambiar\s*usuario\b/i
+    /\bcambio\s*de\s*usuario\b/i, /\bcambiar\s*usuario\b/i,
+    /\b(log\s*out|logout|sign\s*out|exit|disconnect|switch\s*user|change\s*user)\b/i
   ]
 };
 
 const SENSOR_INFO = {
-  'ST-001': { nombre: 'Temperatura', unidad: '°C', icono: '🌡️', param: 'temperatura' },
-  'SH-002': { nombre: 'Humedad', unidad: '%', icono: '💧', param: 'humedad' },
-  'SA-003': { nombre: 'Calidad del Aire', unidad: 'AQI', icono: '🌬️', param: 'aqi' },
-  'SR-004': { nombre: 'Ruido', unidad: 'dB', icono: '🔊', param: 'ruido' }
+  'ST-001': { nameKey: 'sensor.temp', unidad: '°C', icono: '🌡️', param: 'temperatura' },
+  'SH-002': { nameKey: 'sensor.hum', unidad: '%', icono: '💧', param: 'humedad' },
+  'SA-003': { nameKey: 'sensor.aqi', unidad: 'AQI', icono: '🌬️', param: 'aqi' },
+  'SR-004': { nameKey: 'sensor.ruido', unidad: 'dB', icono: '🔊', param: 'ruido' }
 };
 
 const SENSOR_LIST = ['ST-001', 'SH-002', 'SA-003', 'SR-004'];
@@ -93,7 +118,7 @@ function getUser() {
 
 function getRole() {
   const user = getUser();
-  return user ? user.role : 'admin';
+  return user ? user.role : null;
 }
 
 function detectIntent(texto) {
@@ -112,7 +137,8 @@ function isAllowed(intent, rol) {
 
 function formatFecha(iso) {
   const d = new Date(iso);
-  return d.toLocaleDateString('es-EC', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const locale = lang() === 'en' ? 'en-US' : 'es-EC';
+  return d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
 
 function getUltimaLectura(sensorId) {
@@ -160,12 +186,12 @@ function getEstadoSensores() {
     const ultima = getUltimaLectura(id);
     const total = lecturas.filter(l => l.sensor === id).length;
     const umbral = umbrales.find(u => u.parametro === info.param);
-    let estado = 'Normal';
+    let estado = t('dash.sensor.normal');
     if (ultima && umbral) {
       const val = parseFloat(ultima.valor);
       const min = parseFloat(umbral.minimo);
       const max = parseFloat(umbral.maximo);
-      if (val < min || val > max) estado = 'Alerta';
+      if (val < min || val > max) estado = t('dash.sensor.alert');
     }
     return { id, info, ultima, total, estado };
   });
@@ -173,8 +199,8 @@ function getEstadoSensores() {
 
 function buildSensorStatusText(sensores) {
   return sensores.map(s => {
-    const val = s.ultima ? `${s.ultima.valor}${s.info.unidad}` : 'Sin datos';
-    return `${s.info.icono} **${s.id}** (${s.info.nombre}): ${val} — ${s.estado}`;
+    const val = s.ultima ? `${s.ultima.valor}${s.info.unidad}` : t('dash.sensor.no_data');
+    return `${s.info.icono} **${s.id}** (${t(s.info.nameKey)}): ${val} — ${s.estado}`;
   }).join('\n');
 }
 
@@ -183,121 +209,115 @@ function responder(texto, rol) {
 
   if (!intent) {
     const logueado = !!getUser();
-    let base = 'No entendí tu consulta. Puedes preguntarme sobre:\n\n' +
-      '• Temperatura, humedad, calidad del aire o ruido\n' +
-      '• Últimas lecturas o promedios\n' +
-      '• Alertas activas\n' +
-      '• Sensores disponibles\n' +
-      '• Estado general del sistema\n';
+    let base = t('chat.unknown');
     if (!logueado) {
-      base += '\n• **Iniciar sesión** — acceder al sistema';
+      base += t('chat.unknown.login');
     }
-    base += '\n\nEscribe **"¿Qué puedes hacer?"** para más ayuda.';
+    base += t('chat.unknown.help');
     return {
       texto: base,
-      chips: logueado ? ['Temperatura', 'Alertas', 'Estado general'] : ['Iniciar sesión', 'Temperatura', 'Ayuda']
+      chips: logueado
+        ? [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status')]
+        : [t('nav.login'), t('chat.cmd.temp'), t('chat.help_title')]
     };
   }
 
   if (!isAllowed(intent, rol)) {
-    const roleName = { admin: 'Administrador', consultor: 'Consultor', tecnico: 'Técnico' }[rol] || rol;
+    const roleName = t('chat.role.' + rol) || rol;
     return {
-      texto: `⛔ Como **${roleName}**, no tienes acceso a esta información.`,
-      chips: ['Temperatura', 'Alertas', 'Ayuda']
+      texto: t('chat.no_permission', {role: roleName}),
+      chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.help_title')]
     };
   }
 
   switch (intent) {
     case 'saludo': {
-      const roleName = { admin: 'Administrador', consultor: 'Consultor', tecnico: 'Técnico' }[rol] || rol;
+      const roleName = t('chat.role.' + rol) || rol;
       const user = getUser();
-      const nombre = user?.email?.split('@')[0] || 'usuario';
+      const nombre = user?.email?.split('@')[0] || (lang() === 'en' ? 'user' : 'usuario');
+      let texto = t('chat.greeting', {name: nombre, role: roleName});
+      if (rol !== 'tecnico') texto += t('chat.greeting.thresholds');
+      if (rol !== 'consultor') texto += t('chat.greeting.reports');
+      texto += t('chat.greeting.alerts');
       return {
-        texto: `¡Hola **${nombre}**! 👋 Soy el asistente SMAI. Estás autenticado como **${roleName}**.\n\n` +
-          'Puedes consultarme sobre:\n' +
-          '• **Lecturas** — temperatura, humedad, AQI, ruido\n' +
-          (rol !== 'tecnico' ? '• **Umbrales** — límites configurados\n' : '') +
-          (rol !== 'consultor' ? '• **Reportes** y **mantenimientos**\n' : '') +
-          '• **Alertas** activas\n' +
-          '• **Promedios** y últimas lecturas\n\n' +
-          '¿En qué puedo ayudarte?',
-        chips: ['Temperatura', 'Alertas', 'Estado general', 'Ayuda']
+        texto,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status'), t('chat.help_title')]
       };
     }
 
     case 'temperatura': {
       const ultima = getUltimaLectura('ST-001');
-      if (!ultima) return { texto: 'No hay lecturas de temperatura registradas.', chips: ['Humedad', 'Alertas'] };
+      if (!ultima) return { texto: t('chat.no_readings', {param: t('sensor.temp')}), chips: [t('chat.cmd.hum'), t('chat.cmd.alerts')] };
       const prom = getPromedio('ST-001');
       return {
-        texto: `🌡️ **Temperatura** — Sensor ST-001\n\n` +
-          `Última lectura: **${ultima.valor}°C** en ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
-          `Promedio 30 días: **${prom}°C**`,
-        chips: ['Humedad', 'Calidad del aire', 'Ruido', 'Alertas']
+        texto: `🌡️ **${t('sensor.temp')}** — ST-001\n\n` +
+          `${t('chat.last_reading')} **${ultima.valor}°C** ${inWord()} ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
+          `${t('chat.avg_30')} **${prom}°C**`,
+        chips: [t('chat.cmd.hum'), t('chat.cmd.aqi'), t('chat.cmd.ruido'), t('chat.cmd.alerts')]
       };
     }
 
     case 'humedad': {
       const ultima = getUltimaLectura('SH-002');
-      if (!ultima) return { texto: 'No hay lecturas de humedad registradas.', chips: ['Temperatura', 'Alertas'] };
+      if (!ultima) return { texto: t('chat.no_readings', {param: t('sensor.hum')}), chips: [t('chat.cmd.temp'), t('chat.cmd.alerts')] };
       const prom = getPromedio('SH-002');
       return {
-        texto: `💧 **Humedad** — Sensor SH-002\n\n` +
-          `Última lectura: **${ultima.valor}%** en ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
-          `Promedio 30 días: **${prom}%**`,
-        chips: ['Temperatura', 'Calidad del aire', 'Ruido', 'Alertas']
+        texto: `💧 **${t('sensor.hum')}** — SH-002\n\n` +
+          `${t('chat.last_reading')} **${ultima.valor}%** ${inWord()} ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
+          `${t('chat.avg_30')} **${prom}%**`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.aqi'), t('chat.cmd.ruido'), t('chat.cmd.alerts')]
       };
     }
 
     case 'calidad_aire': {
       const ultima = getUltimaLectura('SA-003');
-      if (!ultima) return { texto: 'No hay lecturas de calidad del aire registradas.', chips: ['Temperatura', 'Humedad'] };
+      if (!ultima) return { texto: t('chat.no_readings', {param: t('sensor.aqi')}), chips: [t('chat.cmd.temp'), t('chat.cmd.hum')] };
       const prom = getPromedio('SA-003');
       return {
-        texto: `🌬️ **Calidad del Aire (AQI)** — Sensor SA-003\n\n` +
-          `Última lectura: **${ultima.valor} AQI** en ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
-          `Promedio 30 días: **${prom} AQI**`,
-        chips: ['Temperatura', 'Humedad', 'Ruido', 'Alertas']
+        texto: `🌬️ **${t('sensor.aqi')} (AQI)** — SA-003\n\n` +
+          `${t('chat.last_reading')} **${ultima.valor} AQI** ${inWord()} ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
+          `${t('chat.avg_30')} **${prom} AQI**`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.hum'), t('chat.cmd.ruido'), t('chat.cmd.alerts')]
       };
     }
 
     case 'ruido': {
       const ultima = getUltimaLectura('SR-004');
-      if (!ultima) return { texto: 'No hay lecturas de ruido registradas.', chips: ['Temperatura', 'Alertas'] };
+      if (!ultima) return { texto: t('chat.no_readings', {param: t('sensor.ruido')}), chips: [t('chat.cmd.temp'), t('chat.cmd.alerts')] };
       const prom = getPromedio('SR-004');
       return {
-        texto: `🔊 **Ruido** — Sensor SR-004\n\n` +
-          `Última lectura: **${ultima.valor} dB** en ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
-          `Promedio 30 días: **${prom} dB**`,
-        chips: ['Temperatura', 'Humedad', 'Calidad del aire', 'Alertas']
+        texto: `🔊 **${t('sensor.ruido')}** — SR-004\n\n` +
+          `${t('chat.last_reading')} **${ultima.valor} dB** ${inWord()} ${ultima.ubicacion} (${formatFecha(ultima.fecha)})\n` +
+          `${t('chat.avg_30')} **${prom} dB**`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.hum'), t('chat.cmd.aqi'), t('chat.cmd.alerts')]
       };
     }
 
     case 'alertas': {
       const alertas = getAlertasRecientes(5);
       if (!alertas.length) {
-        return { texto: '✅ No hay alertas registradas recientemente.', chips: ['Temperatura', 'Estado general'] };
+        return { texto: t('chat.no_alerts'), chips: [t('chat.cmd.temp'), t('chat.cmd.status')] };
       }
       const lines = alertas.map((a, i) =>
-        `${i + 1}. ⚠ **${a.parametro}** — ${a.valor} en ${a.ubicacion}\n   _${formatFecha(a.fecha)}_`
+        `${i + 1}. ⚠ **${a.parametro}** — ${a.valor} ${inWord()} ${a.ubicacion}\n   _${formatFecha(a.fecha)}_`
       ).join('\n\n');
       return {
-        texto: `🚨 **Últimas alertas** (${alertas.length}):\n\n${lines}`,
-        chips: ['Temperatura', 'Estado general', 'Sensores']
+        texto: `🚨 **${t('chat.recent_alerts')}** (${alertas.length}):\n\n${lines}`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.status'), t('chat.cmd.sensors')]
       };
     }
 
     case 'umbrales': {
       const umbrales = getFromLS('smai_umbrales');
       if (!umbrales.length) {
-        return { texto: 'No hay umbrales configurados.', chips: ['Temperatura', 'Alertas'] };
+        return { texto: t('chat.no_thresholds'), chips: [t('chat.cmd.temp'), t('chat.cmd.alerts')] };
       }
       const lines = umbrales.map(u =>
-        `• **${u.parametro}** en ${u.ubicacion}: ${u.minimo} — ${u.maximo}`
+        `• **${u.parametro}** ${inWord()} ${u.ubicacion}: ${u.minimo} — ${u.maximo}`
       ).join('\n');
       return {
-        texto: `📏 **Umbrales configurados** (${umbrales.length}):\n\n${lines}`,
-        chips: ['Temperatura', 'Alertas', 'Estado general']
+        texto: `📏 **${t('chat.config_thresholds')}** (${umbrales.length}):\n\n${lines}`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status')]
       };
     }
 
@@ -305,62 +325,62 @@ function responder(texto, rol) {
       const proms = SENSOR_LIST.map(id => {
         const p = getPromedio(id);
         const info = SENSOR_INFO[id];
-        return p ? `${info.icono} **${info.nombre}**: ${p}${info.unidad}` : null;
+        return p ? `${info.icono} **${t(info.nameKey)}**: ${p}${info.unidad}` : null;
       }).filter(Boolean);
-      if (!proms.length) return { texto: 'No hay datos suficientes para calcular promedios.', chips: ['Temperatura', 'Alertas'] };
+      if (!proms.length) return { texto: t('chat.no_avg'), chips: [t('chat.cmd.temp'), t('chat.cmd.alerts')] };
       return {
-        texto: `📊 **Promedios 30 días:**\n\n${proms.join('\n')}`,
-        chips: ['Temperatura', 'Humedad', 'Calidad del aire', 'Ruido']
+        texto: `📊 **${t('chat.avg_30_title')}**\n\n${proms.join('\n')}`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.hum'), t('chat.cmd.aqi'), t('chat.cmd.ruido')]
       };
     }
 
     case 'ultimas_lecturas': {
       const lecturas = getUltimasLecturas(5);
-      if (!lecturas.length) return { texto: 'No hay lecturas registradas.', chips: ['Temperatura', 'Alertas'] };
+      if (!lecturas.length) return { texto: t('chat.no_data_readings'), chips: [t('chat.cmd.temp'), t('chat.cmd.alerts')] };
       const lines = lecturas.map((l, i) =>
         `${i + 1}. ${SENSOR_INFO[l.sensor]?.icono || '📡'} **${l.sensor}**: ${l.valor} — ${l.ubicacion} (${formatFecha(l.fecha)})`
       ).join('\n');
       return {
-        texto: `📋 **Últimas 5 lecturas:**\n\n${lines}`,
-        chips: ['Temperatura', 'Humedad', 'Calidad del aire', 'Ruido', 'Promedio']
+        texto: `📋 **${t('chat.last_5')}**\n\n${lines}`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.hum'), t('chat.cmd.aqi'), t('chat.cmd.ruido'), t('chat.cmd.avg')]
       };
     }
 
     case 'reportes': {
       const pendientes = getReportesPendientes();
       const total = getFromLS('smai_reportes');
-      if (!total.length) return { texto: 'No hay reportes de falla registrados.', chips: ['Temperatura', 'Alertas', 'Mantenimientos'] };
-      let respuesta = `📋 **Reportes de falla** (${total.length} total, ${pendientes.length} pendientes)\n\n`;
+      if (!total.length) return { texto: t('chat.no_reports'), chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.maint')] };
+      let respuesta = `📋 **${t('chat.reports_title')}** (${total.length} total, ${pendientes.length} ${t('chat.reports_pending')})\n\n`;
       if (pendientes.length) {
-        respuesta += '**Pendientes:**\n' + pendientes.slice(0, 5).map((r, i) =>
+        respuesta += `**${t('rpt.stat.pending')}:**\n` + pendientes.slice(0, 5).map((r, i) =>
           `${i + 1}. **${r.equipo}** — ${r.asunto} (${r.fecha})`
         ).join('\n');
       } else {
-        respuesta += '✅ No hay reportes pendientes.';
+        respuesta += t('chat.no_pending');
       }
-      return { texto: respuesta, chips: ['Mantenimientos', 'Temperatura', 'Alertas'] };
+      return { texto: respuesta, chips: [t('chat.cmd.maint'), t('chat.cmd.temp'), t('chat.cmd.alerts')] };
     }
 
     case 'mantenimientos': {
       const mantos = getUltimosMantos(null, 5);
-      if (!mantos.length) return { texto: 'No hay mantenimientos registrados.', chips: ['Reportes', 'Temperatura', 'Alertas'] };
+      if (!mantos.length) return { texto: t('chat.no_maint'), chips: [t('chat.cmd.reports'), t('chat.cmd.temp'), t('chat.cmd.alerts')] };
       const lines = mantos.map((m, i) =>
         `${i + 1}. **${m.equipo}** — ${m.accion} (${m.fecha})`
       ).join('\n');
       return {
-        texto: `🔧 **Últimos mantenimientos:**\n\n${lines}`,
-        chips: ['Reportes', 'Temperatura', 'Sensores']
+        texto: `🔧 **${t('chat.last_maint')}**\n\n${lines}`,
+        chips: [t('chat.cmd.reports'), t('chat.cmd.temp'), t('chat.cmd.sensors')]
       };
     }
 
     case 'sensores': {
       const estados = getEstadoSensores();
       const total = estados.length;
-      const alertas = estados.filter(s => s.estado === 'Alerta').length;
+      const alertas = estados.filter(s => s.estado === t('dash.sensor.alert')).length;
       const lines = buildSensorStatusText(estados);
       return {
-        texto: `📡 **Sensores del sistema** (${total})\n⚠ Alertas: ${alertas}\n\n${lines}`,
-        chips: ['Temperatura', 'Humedad', 'Calidad del aire', 'Ruido', 'Estado general']
+        texto: `📡 **${t('chat.sensors_title')}** (${total})\n⚠ ${t('chat.sensors_alerts')} ${alertas}\n\n${lines}`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.hum'), t('chat.cmd.aqi'), t('chat.cmd.ruido'), t('chat.cmd.status')]
       };
     }
 
@@ -369,40 +389,40 @@ function responder(texto, rol) {
       const alertasCount = getFromLS('smai_alertas').length;
       const reportesPend = getReportesPendientes().length;
       const lines = buildSensorStatusText(estados);
-      const enAlerta = estados.filter(s => s.estado === 'Alerta').length;
+      const enAlerta = estados.filter(s => s.estado === t('dash.sensor.alert')).length;
       return {
-        texto: `📊 **Estado General del Sistema**\n\n` +
-          `**Sensores:** ${estados.length} total, ${enAlerta} en alerta\n` +
-          `**Alertas registradas:** ${alertasCount}\n` +
-          `**Reportes pendientes:** ${reportesPend}\n\n` +
-          `**Lecturas por sensor:**\n${lines}`,
-        chips: ['Alertas', 'Temperatura', 'Sensores', 'Reportes']
+        texto: `📊 **${t('chat.system_status')}**\n\n` +
+          `**${t('chat.system_sensors')}** ${estados.length}, ${enAlerta} ${t('chat.sensors_alerts')}\n` +
+          `**${t('chat.system_alerts')}** ${alertasCount}\n` +
+          `**${t('chat.system_reports')}** ${reportesPend}\n\n` +
+          `**${t('chat.system_readings')}**\n${lines}`,
+        chips: [t('chat.cmd.alerts'), t('chat.cmd.temp'), t('chat.cmd.sensors'), t('chat.cmd.reports')]
       };
     }
 
     case 'ayuda': {
       return {
-        texto: '🤖 **Comandos disponibles:**\n\n' +
-          '• _Temperatura_ — última lectura y promedio\n' +
-          '• _Humedad_ — última lectura y promedio\n' +
-          '• _Calidad del aire_ — última lectura y promedio\n' +
-          '• _Ruido_ — última lectura y promedio\n' +
-          '• _Alertas_ — últimas alertas activas\n' +
-          (rol !== 'tecnico' ? '• _Umbrales_ — límites configurados\n' : '') +
-          '• _Promedio_ — promedios de todos los sensores\n' +
-          '• _Últimas lecturas_ — las 5 más recientes\n' +
-          (rol !== 'consultor' ? '• _Reportes_ — fallas pendientes\n' : '') +
-          (rol !== 'consultor' ? '• _Mantenimientos_ — últimos registros\n' : '') +
-          '• _Sensores_ — estado de cada dispositivo\n' +
-          '• _Estado general_ — resumen completo del sistema',
-        chips: ['Temperatura', 'Alertas', 'Estado general', 'Sensores']
+        texto: `🤖 **${t('chat.help_title')}:**\n\n` +
+          `• _${t('chat.cmd.temp')}_ — ${t('chat.cmd.temp.desc')}\n` +
+          `• _${t('chat.cmd.hum')}_ — ${t('chat.cmd.hum.desc')}\n` +
+          `• _${t('chat.cmd.aqi')}_ — ${t('chat.cmd.aqi.desc')}\n` +
+          `• _${t('chat.cmd.ruido')}_ — ${t('chat.cmd.ruido.desc')}\n` +
+          `• _${t('chat.cmd.alerts')}_ — ${t('chat.cmd.alerts.desc')}\n` +
+          (rol !== 'tecnico' ? `• _${t('chat.cmd.thresholds')}_ — ${t('chat.cmd.thresholds.desc')}\n` : '') +
+          `• _${t('chat.cmd.avg')}_ — ${t('chat.cmd.avg.desc')}\n` +
+          `• _${t('chat.cmd.recent')}_ — ${t('chat.cmd.recent.desc')}\n` +
+          (rol !== 'consultor' ? `• _${t('chat.cmd.reports')}_ — ${t('chat.cmd.reports.desc')}\n` : '') +
+          (rol !== 'consultor' ? `• _${t('chat.cmd.maint')}_ — ${t('chat.cmd.maint.desc')}\n` : '') +
+          `• _${t('chat.cmd.sensors')}_ — ${t('chat.cmd.sensors.desc')}\n` +
+          `• _${t('chat.cmd.status')}_ — ${t('chat.cmd.status.desc')}`,
+        chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status'), t('chat.cmd.sensors')]
       };
     }
 
     case 'despedida': {
       return {
-        texto: '¡De nada! 😊 Estoy aquí para ayudarte con el monitoreo ambiental. Vuelve cuando necesites consultar algo.',
-        chips: ['Temperatura', 'Alertas', 'Estado general']
+        texto: t('chat.goodbye'),
+        chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status')]
       };
     }
 
@@ -410,15 +430,15 @@ function responder(texto, rol) {
       const logueado = !!getUser();
       if (logueado) {
         return {
-          texto: 'Ya has iniciado sesión. Si quieres cambiar de usuario, escribe **"Cerrar sesión"**.',
-          chips: ['Cerrar sesión', 'Temperatura', 'Alertas']
+          texto: t('chat.already_logged'),
+          chips: [t('nav.logout'), t('chat.cmd.temp'), t('chat.cmd.alerts')]
         };
       }
       return {
-        texto: '🔐 Para iniciar sesión, dirígete a la página de **Inicio de Sesión** o haz clic en el botón de abajo.',
+        texto: t('chat.login_redirect'),
         accion: 'redirect',
         destino: '/src/pages/login.html',
-        chips: ['Temperatura', 'Alertas', 'Ayuda']
+        chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.help_title')]
       };
     }
 
@@ -426,12 +446,12 @@ function responder(texto, rol) {
       const logueado = !!getUser();
       if (!logueado) {
         return {
-          texto: 'No has iniciado sesión. Escribe **"Iniciar sesión"** para acceder al sistema.',
-          chips: ['Iniciar sesión', 'Ayuda']
+          texto: t('chat.not_logged'),
+          chips: [t('nav.login'), t('chat.help_title')]
         };
       }
       return {
-        texto: '¿Estás seguro de que quieres cerrar sesión?',
+        texto: t('chat.logout_confirm'),
         accion: 'logout',
         chips: []
       };
@@ -439,30 +459,32 @@ function responder(texto, rol) {
 
     default:
       return {
-        texto: 'No entendí tu consulta. Escribe **"¿Qué puedes hacer?"** para ver los comandos disponibles.',
-        chips: ['Ayuda', 'Temperatura', 'Alertas']
+        texto: t('chat.unknown') + t('chat.unknown.help'),
+        chips: [t('chat.help_title'), t('chat.cmd.temp'), t('chat.cmd.alerts')]
       };
   }
 }
 
 function buildChatHTML(rol) {
-  const roleName = { admin: 'Administrador', consultor: 'Consultor', tecnico: 'Técnico', invitado: 'Invitado' }[rol] || rol;
+  const roleName = t('chat.role.' + rol) || rol;
   const bienvenida = rol === 'invitado'
-    ? '👋 ¡Bienvenido a SMAI! Soy el asistente virtual.\n\nPara usar el sistema, primero debes **iniciar sesión**.\n\n¿En qué puedo ayudarte?'
-    : '👋 ¡Hola! Soy el asistente virtual de SMAI. Puedes preguntarme sobre lecturas, alertas, sensores y más.';
-  const chipsIniciales = rol === 'invitado' ? ['Iniciar sesión', 'Temperatura', 'Ayuda'] : ['Temperatura', 'Alertas', 'Estado general', 'Ayuda'];
+    ? t('chat.welcome.guest')
+    : t('chat.welcome.user');
+  const chipsIniciales = rol === 'invitado'
+    ? [t('nav.login'), t('chat.cmd.temp'), t('chat.help_title')]
+    : [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status'), t('chat.help_title')];
   return `
-    <div id="chat-fab" role="button" tabindex="0" aria-label="Abrir chat con asistente SMAI" data-tooltip="Chat SMAI" class="tooltip-top">
+    <div id="chat-fab" role="button" tabindex="0" aria-label="${t('chat.label')}" data-tooltip="Chat SMAI" class="tooltip-top">
       <span aria-hidden="true">💬</span>
     </div>
-    <div id="chat-panel" role="dialog" aria-modal="true" aria-label="Asistente SMAI - Chat" hidden>
+    <div id="chat-panel" role="dialog" aria-modal="true" aria-label="${t('chat.title')} - Chat" hidden>
       <div id="chat-header">
         <div>
           <span class="chat-header-icon" aria-hidden="true">🤖</span>
-          <span class="chat-header-title">Asistente SMAI</span>
+          <span class="chat-header-title">${t('chat.title')}</span>
           <span class="chat-header-badge">${roleName}</span>
         </div>
-        <button id="chat-close" aria-label="Cerrar chat">&times;</button>
+        <button id="chat-close" aria-label="${t('chat.close')}">&times;</button>
       </div>
       <div id="chat-msgs" role="log" aria-live="polite" aria-relevant="additions">
         <div class="chat-msg chat-msg-bot">
@@ -471,9 +493,9 @@ function buildChatHTML(rol) {
       </div>
       <div id="chat-chips" data-chips="${chipsIniciales.join(',')}"></div>
       <div id="chat-input-area">
-        <label for="chatInput" class="sr-only">Escribe tu mensaje</label>
-        <input id="chatInput" type="text" placeholder="Escribe tu mensaje..." autocomplete="off">
-        <button id="chat-send" aria-label="Enviar mensaje">
+        <label for="chatInput" class="sr-only">${t('chat.input_label')}</label>
+        <input id="chatInput" type="text" placeholder="${t('chat.input_placeholder')}" autocomplete="off">
+        <button id="chat-send" aria-label="${t('chat.send')}">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
@@ -486,6 +508,12 @@ function scrollToBottom() {
   if (msgs) msgs.scrollTop = msgs.scrollHeight;
 }
 
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
 function addMessage(texto, tipo) {
   const msgs = document.getElementById('chat-msgs');
   if (!msgs) return;
@@ -493,7 +521,8 @@ function addMessage(texto, tipo) {
   div.className = `chat-msg chat-msg-${tipo}`;
   const content = document.createElement('div');
   content.className = 'chat-msg-content';
-  content.innerHTML = texto.replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  const safe = escapeHTML(texto);
+  content.innerHTML = safe.replace(/\n/g, '<br>').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   div.appendChild(content);
   msgs.appendChild(div);
   scrollToBottom();
@@ -519,11 +548,12 @@ function setChips(chips) {
   const container = document.getElementById('chat-chips');
   if (!container) return;
   container.innerHTML = '';
+  const askLabel = t('chat.chip_ask');
   chips.forEach(label => {
     const btn = document.createElement('button');
     btn.className = 'chat-chip';
     btn.textContent = label;
-    btn.setAttribute('aria-label', `Preguntar sobre ${label}`);
+    btn.setAttribute('aria-label', `${askLabel} ${label}`);
     btn.addEventListener('click', () => {
       document.getElementById('chatInput').value = label;
       handleSend();
@@ -597,7 +627,7 @@ function initChat() {
     if (chipsData) {
       setChips(chipsData.split(','));
     } else {
-      setChips(['Temperatura', 'Alertas', 'Estado general', 'Ayuda']);
+      setChips([t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.cmd.status'), t('chat.help_title')]);
     }
   }
 
@@ -626,6 +656,12 @@ function initChat() {
 
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && isOpen) closePanel();
+  });
+
+  document.addEventListener('click', e => {
+    if (isOpen && !e.target.closest('#chat-container') && !e.target.closest('#chat-fab')) {
+      closePanel();
+    }
   });
 
   panel.addEventListener('keydown', e => {

@@ -92,9 +92,10 @@ function getPrefs() { return prefs; }
 function initExports() {
   window.SMAI = window.SMAI || {};
   SMAI.exportPDF = function(source) {
+    const t = window.SMAI?.t || (k => k);
     try {
       const doc = new jspdf.jsPDF();
-      doc.text('SMAI - Reporte de ' + source, 10, 10);
+      doc.text('SMAI - ' + source, 10, 10);
       const rows = [];
       const tables = document.querySelectorAll('table');
       if (tables.length > 0) {
@@ -111,13 +112,14 @@ function initExports() {
         doc.autoTable({ head: [rows[0]], body: rows.slice(1) });
       }
       doc.save('reporte_' + source + '_' + new Date().toISOString().slice(0,10) + '.pdf');
-      window.showNotification?.('Reporte PDF descargado correctamente.', 'success');
+      window.showNotification?.(t('notif.pdf_success'), 'success');
     } catch(e) {
-      window.showNotification?.('Error al generar PDF. Asegúrese de tener conexión a internet.', 'error');
+      window.showNotification?.(t('notif.pdf_error'), 'error');
     }
   };
 
   SMAI.exportExcel = function(source) {
+    const t = window.SMAI?.t || (k => k);
     try {
       const data = [];
       const tables = document.querySelectorAll('table');
@@ -135,29 +137,30 @@ function initExports() {
       const ws = XLSX.utils.aoa_to_sheet(data);
       XLSX.utils.book_append_sheet(wb, ws, 'Datos');
       XLSX.writeFile(wb, 'reporte_' + source + '_' + new Date().toISOString().slice(0,10) + '.xlsx');
-      window.showNotification?.('Reporte Excel descargado correctamente.', 'success');
+      window.showNotification?.(t('notif.excel_success'), 'success');
     } catch(e) {
-      window.showNotification?.('Error al generar Excel. Asegúrese de tener conexión a internet.', 'error');
+      window.showNotification?.(t('notif.excel_error'), 'error');
     }
   };
 }
 
 function buildMenu() {
+  const t = window.SMAI?.t || (k => k);
   const container = document.createElement('div');
   container.id = 'accesibilidad-menu';
   container.setAttribute('role', 'region');
-  container.setAttribute('aria-label', 'Menú de accesibilidad');
+  container.setAttribute('aria-label', t('acc.title'));
 
   const btn = document.createElement('button');
   btn.id = 'accesibilidad-toggle';
-  btn.innerHTML = '♿ Accesibilidad';
+  btn.innerHTML = '♿ ' + t('acc.title');
   btn.setAttribute('aria-expanded', 'false');
   btn.setAttribute('aria-controls', 'accesibilidad-panel');
 
   const panel = document.createElement('div');
   panel.id = 'accesibilidad-panel';
   panel.setAttribute('role', 'region');
-  panel.setAttribute('aria-label', 'Opciones de accesibilidad');
+  panel.setAttribute('aria-label', t('acc.panel_label'));
   panel.style.display = 'none';
 
   btn.addEventListener('click', () => {
@@ -182,49 +185,49 @@ function buildMenu() {
   });
 
   const groups = [
-    { title: 'Opciones de texto', items: [
-      { label: 'Tamaño de texto', type: 'range', key: 'fontSize', min: 50, max: 200, step: 10, unit: '%' },
-      { label: 'Tipografía legible', type: 'select', key: 'fontFamily', options: [
-        { value: 'default', text: 'Original' },
-        { value: 'sans', text: 'Sans-Serif (Arial)' },
-        { value: 'serif', text: 'Serif (Georgia)' },
-        { value: 'dyslexic', text: 'OpenDyslexic (lectura fácil)' }
+    { titleKey: 'acc.text_opts', items: [
+      { labelKey: 'acc.font_size', type: 'range', key: 'fontSize', min: 50, max: 200, step: 10, unit: '%' },
+      { labelKey: 'acc.font_family', type: 'select', key: 'fontFamily', options: [
+        { value: 'default', textKey: 'acc.font.original' },
+        { value: 'sans', textKey: 'acc.font.sans' },
+        { value: 'serif', textKey: 'acc.font.serif' },
+        { value: 'dyslexic', textKey: 'acc.font.dyslexic' }
       ]},
-      { label: 'Espaciado ampliado', type: 'toggle', key: 'lineSpacing' },
+      { labelKey: 'acc.line_spacing', type: 'toggle', key: 'lineSpacing' },
     ]},
-    { title: 'Opciones de color', items: [
-      { label: 'Alto contraste', type: 'toggle', key: 'highContrast' },
-      { label: 'Modo monocromo', type: 'toggle', key: 'monochrome' },
-      { label: 'Contraste en controles', type: 'toggle', key: 'contrastControls' },
+    { titleKey: 'acc.color_opts', items: [
+      { labelKey: 'acc.high_contrast', type: 'toggle', key: 'highContrast' },
+      { labelKey: 'acc.monochrome', type: 'toggle', key: 'monochrome' },
+      { labelKey: 'acc.contrast_controls', type: 'toggle', key: 'contrastControls' },
     ]},
-    { title: 'Movimiento', items: [
-      { label: 'Detener animaciones', type: 'toggle', key: 'stopMotion' },
-      { label: 'Reducir destellos', type: 'toggle', key: 'reduceFlashes' },
+    { titleKey: 'acc.motion_opts', items: [
+      { labelKey: 'acc.stop_anim', type: 'toggle', key: 'stopMotion' },
+      { labelKey: 'acc.reduce_flashes', type: 'toggle', key: 'reduceFlashes' },
     ]},
-    { title: 'Navegación', items: [
-      { label: 'Mostrar saltos de navegación', type: 'toggle', key: 'showSkipLinks' },
-      { label: 'Resaltar foco', type: 'toggle', key: 'focusVisible' },
-      { label: 'Objetivos grandes', type: 'toggle', key: 'targetSize' },
-      { label: 'Desactivar tooltips', type: 'toggle', key: 'disableTooltips' },
+    { titleKey: 'acc.nav_opts', items: [
+      { labelKey: 'acc.show_skip', type: 'toggle', key: 'showSkipLinks' },
+      { labelKey: 'acc.focus_highlight', type: 'toggle', key: 'focusVisible' },
+      { labelKey: 'acc.large_targets', type: 'toggle', key: 'targetSize' },
+      { labelKey: 'acc.disable_tooltips', type: 'toggle', key: 'disableTooltips' },
     ]},
-    { title: 'Formularios', items: [
-      { label: 'Desactivar atajos teclado', type: 'toggle', key: 'keyboardShortcuts' },
-      { label: 'Modo sin prisas', type: 'toggle', key: 'noTiming' },
+    { titleKey: 'acc.form_opts', items: [
+      { labelKey: 'acc.disable_shortcuts', type: 'toggle', key: 'keyboardShortcuts' },
+      { labelKey: 'acc.no_timing', type: 'toggle', key: 'noTiming' },
     ]},
-    { title: 'Lector de pantalla', items: [
-      { label: 'Activar lector', type: 'readerToggle', key: 'readerEnabled' },
+    { titleKey: 'acc.reader_opts', items: [
+      { labelKey: 'acc.enable_reader', type: 'readerToggle', key: 'readerEnabled' },
     ]},
   ];
 
   const hasMedia = document.querySelector('audio, video');
   if (hasMedia) {
     groups.push({
-      title: 'Auditiva',
+      titleKey: 'acc.audio_opts',
       items: [
-        { label: 'Silenciar audio', type: 'toggle', key: 'audioMuted' },
-        { label: 'Activar subtítulos', type: 'toggle', key: 'subtitles' },
-        { label: 'Activar transcripciones', type: 'toggle', key: 'transcripts' },
-        { label: 'Activar audiodescripción', type: 'toggle', key: 'audioDescription' },
+        { labelKey: 'acc.mute_audio', type: 'toggle', key: 'audioMuted' },
+        { labelKey: 'acc.enable_subtitles', type: 'toggle', key: 'subtitles' },
+        { labelKey: 'acc.enable_transcripts', type: 'toggle', key: 'transcripts' },
+        { labelKey: 'acc.enable_audiodesc', type: 'toggle', key: 'audioDescription' },
       ]
     });
   }
@@ -232,7 +235,8 @@ function buildMenu() {
   groups.forEach(group => {
     const fieldset = document.createElement('fieldset');
     const legend = document.createElement('legend');
-    legend.textContent = group.title;
+    legend.textContent = t(group.titleKey);
+    legend.setAttribute('data-i18n', group.titleKey);
     fieldset.appendChild(legend);
 
     group.items.forEach(item => {
@@ -250,7 +254,8 @@ function buildMenu() {
           save();
         });
         const span = document.createElement('span');
-        span.textContent = item.label;
+        span.textContent = t(item.labelKey);
+        span.setAttribute('data-i18n', item.labelKey);
         label.appendChild(cb);
         label.appendChild(span);
         wrapper.appendChild(label);
@@ -258,13 +263,13 @@ function buildMenu() {
         const label = document.createElement('label');
         label.style.display = 'block';
         const span = document.createElement('span');
-        span.textContent = item.label + ': ' + prefs[item.key] + item.unit;
+        span.textContent = t(item.labelKey) + ': ' + prefs[item.key] + item.unit;
         const inp = document.createElement('input');
         inp.type = 'range'; inp.min = item.min; inp.max = item.max;
         inp.step = item.step; inp.value = prefs[item.key];
         inp.addEventListener('input', () => {
           prefs[item.key] = parseInt(inp.value);
-          span.textContent = item.label + ': ' + prefs[item.key] + item.unit;
+          span.textContent = t(item.labelKey) + ': ' + prefs[item.key] + item.unit;
           save();
         });
         label.appendChild(span);
@@ -285,21 +290,21 @@ function buildMenu() {
           }
         });
         const span = document.createElement('span');
-        span.textContent = item.label;
+        span.textContent = t(item.labelKey);
         label.appendChild(cb);
         label.appendChild(span);
         wrapper.appendChild(label);
       } else if (item.type === 'select') {
         const label = document.createElement('label');
         label.style.display = 'block';
-        label.innerHTML = item.label;
+        label.textContent = t(item.labelKey);
         const sel = document.createElement('select');
         sel.style.display = 'block';
         sel.style.marginTop = '4px';
         sel.style.width = '100%';
         item.options.forEach(opt => {
           const o = document.createElement('option');
-          o.value = opt.value; o.textContent = opt.text;
+          o.value = opt.value; o.textContent = t(opt.textKey);
           if (opt.value === prefs[item.key]) o.selected = true;
           sel.appendChild(o);
         });
@@ -316,7 +321,7 @@ function buildMenu() {
   });
 
   const resetBtn = document.createElement('button');
-  resetBtn.textContent = 'Restablecer valores';
+  resetBtn.textContent = t('acc.reset');
   resetBtn.className = 'btn btn-sm';
   resetBtn.style.marginTop = '12px';
   resetBtn.addEventListener('click', () => {
@@ -358,23 +363,24 @@ function initKeyboardShortcuts() {
 }
 
 function buildHelpButton() {
+  const t = window.SMAI?.t || (k => k);
   const helpBtn = document.createElement('button');
   helpBtn.id = 'help-button';
   helpBtn.innerHTML = '?';
-  helpBtn.setAttribute('aria-label', 'Ayuda contextual');
-  helpBtn.setAttribute('title', 'Ayuda');
+  helpBtn.setAttribute('aria-label', t('acc.title'));
+  helpBtn.setAttribute('title', '?');
 
   const helpPanel = document.createElement('div');
   helpPanel.id = 'help-panel';
 
   const pageHelp = {
-    'index.html': { title: 'Ayuda - Página de Inicio', content: 'Seleccione un módulo desde las tarjetas del portal o usando el menú de navegación superior.' },
-    'dashboard.html': { title: 'Ayuda - Dashboard', content: 'Panel principal del sistema. Muestra un resumen general con el total de lecturas registradas, sensores activos, alertas vigentes y días con datos. La grilla de sensores despliega la última lectura de cada equipo y su estado. El gráfico de tendencias semanales permite detectar patrones. Use los botones de exportación para descargar reportes en PDF o Excel.' },
-    'umbrales.html': { title: 'Ayuda - Gestión de Umbrales', content: 'Presione "+ Nuevo umbral" para agregar un límite de alerta. Use los botones Editar y Eliminar en la tabla para modificar umbrales existentes.' },
-    'consulta-datos.html': { title: 'Ayuda - Consulta de Datos', content: 'Use los filtros de fecha, parámetro y ubicación para buscar datos históricos. Puede descargar los resultados en PDF o Excel.' },
-    'reporte-fallas.html': { title: 'Ayuda - Reporte de Fallas', content: 'Seleccione el equipo/sensor dañado, ingrese un asunto y descripción del problema.' },
-    'lecturas-manuales.html': { title: 'Ayuda - Lecturas Manuales', content: 'Seleccione el sensor, ingrese el valor numérico de la lectura, la unidad y la ubicación.' },
-    'login.html': { title: 'Ayuda - Inicio de Sesión', content: 'Ingrese su correo electrónico y contraseña. Para esta demo use cualquier correo y seleccione su rol.' }
+    'index.html': { titleKey: 'help.title', contentKey: 'help.home' },
+    'dashboard.html': { titleKey: 'help.dashboard.title', contentKey: 'help.dashboard' },
+    'umbrales.html': { titleKey: 'help.thresholds.title', contentKey: 'help.thresholds' },
+    'consulta-datos.html': { titleKey: 'help.query.title', contentKey: 'help.query' },
+    'reporte-fallas.html': { titleKey: 'help.reports.title', contentKey: 'help.reports' },
+    'lecturas-manuales.html': { titleKey: 'help.readings.title', contentKey: 'help.readings' },
+    'login.html': { titleKey: 'help.login.title', contentKey: 'help.login' }
   };
 
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
@@ -382,16 +388,16 @@ function buildHelpButton() {
 
   const closeBtn = document.createElement('button');
   closeBtn.className = 'btn-close-help';
-  closeBtn.setAttribute('aria-label', 'Cerrar ayuda');
+  closeBtn.setAttribute('aria-label', '×');
   closeBtn.innerHTML = '&times;';
   helpPanel.appendChild(closeBtn);
 
   const title = document.createElement('h3');
-  title.textContent = helpInfo.title;
+  title.textContent = t(helpInfo.titleKey);
   helpPanel.appendChild(title);
 
   const para = document.createElement('p');
-  para.textContent = helpInfo.content;
+  para.textContent = t(helpInfo.contentKey);
   helpPanel.appendChild(para);
 
   helpBtn.addEventListener('click', () => {
@@ -423,47 +429,48 @@ function buildHelpButton() {
 }
 
 function buildShortcutsButton() {
+  const t = window.SMAI?.t || (k => k);
   const btn = document.createElement('button');
   btn.id = 'shortcuts-button';
   btn.innerHTML = '&#x2328;';
-  btn.setAttribute('aria-label', 'Atajos de teclado');
-  btn.setAttribute('title', 'Mostrar atajos de teclado');
+  btn.setAttribute('aria-label', t('shortcuts.title'));
+  btn.setAttribute('title', t('shortcuts.title'));
 
   const panel = document.createElement('div');
   panel.id = 'shortcuts-panel';
   panel.setAttribute('role', 'dialog');
-  panel.setAttribute('aria-label', 'Lista de atajos de teclado');
+  panel.setAttribute('aria-label', t('shortcuts.title'));
 
   const navPages = [
-    { href: 'index.html', label: 'Inicio' },
-    { href: 'dashboard.html', label: 'Dashboard' },
-    { href: 'umbrales.html', label: 'Umbrales' },
-    { href: 'consulta-datos.html', label: 'Consulta de Datos' },
-    { href: 'alertas.html', label: 'Alertas' },
-    { href: 'reporte-fallas.html', label: 'Reporte de Fallas' },
-    { href: 'lecturas-manuales.html', label: 'Lecturas Manuales' }
+    { href: 'index.html', labelKey: 'shortcuts.home' },
+    { href: 'dashboard.html', labelKey: 'shortcuts.dashboard' },
+    { href: 'umbrales.html', labelKey: 'shortcuts.thresholds' },
+    { href: 'consulta-datos.html', labelKey: 'shortcuts.query' },
+    { href: 'alertas.html', labelKey: 'shortcuts.alerts' },
+    { href: 'reporte-fallas.html', labelKey: 'shortcuts.reports' },
+    { href: 'lecturas-manuales.html', labelKey: 'shortcuts.readings' }
   ];
 
   const closeBtn = document.createElement('button');
   closeBtn.className = 'btn-close-shortcuts';
-  closeBtn.setAttribute('aria-label', 'Cerrar atajos');
+  closeBtn.setAttribute('aria-label', '×');
   closeBtn.innerHTML = '&times;';
   panel.appendChild(closeBtn);
 
   const title = document.createElement('h3');
-  title.textContent = 'Atajos de teclado';
+  title.textContent = t('shortcuts.title');
   panel.appendChild(title);
 
   const para = document.createElement('p');
-  para.textContent = 'Use estas combinaciones para navegar rápidamente entre secciones.';
+  para.textContent = t('shortcuts.desc');
   panel.appendChild(para);
 
   const table = document.createElement('table');
   table.className = 'shortcuts-table';
   table.innerHTML =
-    '<thead><tr><th scope="col">Alt+</th><th scope="col">Ctrl+Shift+</th><th scope="col">Sección</th></tr></thead>' +
+    `<thead><tr><th scope="col">${t('shortcuts.col.alt')}</th><th scope="col">${t('shortcuts.col.ctrl')}</th><th scope="col">${t('shortcuts.col.section')}</th></tr></thead>` +
     '<tbody>' + navPages.map((p, i) =>
-      '<tr><td>Alt+' + (i+1) + '</td><td>Ctrl+Shift+' + (i+1) + '</td><td>' + p.label + '</td></tr>'
+      `<tr><td>Alt+${i+1}</td><td>Ctrl+Shift+${i+1}</td><td>${t(p.labelKey)}</td></tr>`
     ).join('') + '</tbody>';
   panel.appendChild(table);
 
@@ -510,4 +517,21 @@ function init() {
   initKeyboardShortcuts();
   initExports();
   if (window.initTooltips) window.initTooltips();
+
+  // Rebuild accessibility panel on language change
+  window.addEventListener('langchange', () => {
+    const oldPanel = document.getElementById('accesibilidad-menu');
+    if (oldPanel) oldPanel.remove();
+    const oldHelp = document.getElementById('help-button');
+    if (oldHelp) oldHelp.remove();
+    const oldHelpPanel = document.getElementById('help-panel');
+    if (oldHelpPanel) oldHelpPanel.remove();
+    const oldShortcuts = document.getElementById('shortcuts-button');
+    if (oldShortcuts) oldShortcuts.remove();
+    const oldShortcutsPanel = document.getElementById('shortcuts-panel');
+    if (oldShortcutsPanel) oldShortcutsPanel.remove();
+    buildMenu();
+    buildHelpButton();
+    buildShortcutsButton();
+  });
 }

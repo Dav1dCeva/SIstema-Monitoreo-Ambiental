@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:10.000
+SMAI logo on screen. Transition to the login page with email and password fields, and a role dropdown selector.
+
+00:00:10.000 --> 00:00:18.000
+The cursor types "admin@smai.cl" in the email field. Selects "Administrator" from the dropdown menu. Clicks the "Log in" button. The screen changes to the Dashboard.
+
+00:00:18.000 --> 00:00:32.000
+The Dashboard displays four stat cards: total readings, active sensors, current alerts, and days with data. Below, a grid with four sensors: ST-001 Temperature in green, SH-002 Humidity in green, SA-003 Air Quality in red, SR-004 Noise in green. Further down, a line chart with weekly trend.
+
+00:00:32.000 --> 00:00:42.000
+Navigation to the Thresholds module. An existing thresholds table is shown. The cursor clicks the "+ New threshold" button. A form opens. "Temperature" and "North Tower" are selected, 15 is entered for minimum and 35 for maximum.
+
+00:00:42.000 --> 00:00:50.000
+Click on "Save". The new threshold appears in the table with the entered values.
+
+00:00:50.000 --> 00:01:04.000
+Data Query screen. The date filter is set to the last week and location "North Tower". Click on "Apply filters". A results table appears. Click the "PDF" button. A file is downloaded.
+
+00:01:04.000 --> 00:01:18.000
+Alerts screen with a history table. Rows are shown with colors based on severity. Click on "Simulate alert". A new row appears in the table with a newly generated alert.
+
+00:01:18.000 --> 00:01:35.000
+Fade to black. The SMAI logo appears centered with the text "SMAI — Smart Monitoring".

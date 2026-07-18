@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,37 +7,37 @@
   <link rel="stylesheet" href="/src/css/style.css">
 </head>
 <body>
-  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <a href="#main" class="skip-link" data-i18n="skip">Saltar al contenido principal</a>
   <header class="app-header">
     <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
-    <nav aria-label="Navegación principal"></nav>
+    <nav aria-label="Main navigation"></nav>
   </header>
   <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="consultaApp()">
     <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
-      <h2 class="text-lg font-semibold">Consulta de Datos</h2>
+      <h2 class="text-lg font-semibold" data-i18n="qry.title">Consulta de Datos</h2>
       <div class="flex gap-2">
-        <button class="btn-success" @click="exportPDF('consulta')" data-tooltip="Descargue un PDF con los datos filtrados"><span aria-hidden="true">📄</span> PDF</button>
-        <button class="btn-primary" @click="exportExcel('consulta')" data-tooltip="Descargue un Excel con los datos filtrados"><span aria-hidden="true">📊</span> Excel</button>
+        <button class="btn-success" @click="exportPDF('consulta')" data-tooltip="Descargue un PDF con los datos filtrados" data-i18n="qry.pdf"><span aria-hidden="true">📄</span> PDF</button>
+        <button class="btn-primary" @click="exportExcel('consulta')" data-tooltip="Descargue un Excel con los datos filtrados" data-i18n="qry.excel"><span aria-hidden="true">📊</span> Excel</button>
       </div>
     </div>
 
-    <div class="context-bar" id="contextConsulta">
+    <div class="context-bar" id="contextConsulta" data-i18n="qry.context">
       Panel de consulta de datos históricos. Use los filtros para refinar la búsqueda, exporte los resultados o compare datos entre zonas.
     </div>
 
     <fieldset class="card-modern mb-6">
-      <legend class="text-base font-semibold mb-3 px-1">Filtros de Búsqueda</legend>
+      <legend class="text-base font-semibold mb-3 px-1" data-i18n="qry.filters">Filtros de Búsqueda</legend>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div>
-          <label for="filtroFechaDesde" class="block mb-1 font-semibold text-sm">Fecha desde</label>
+          <label for="filtroFechaDesde" class="block mb-1 font-semibold text-sm" data-i18n="qry.filters.date_from">Fecha desde</label>
           <input type="date" id="filtroFechaDesde" class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" x-model="filtros.desde">
         </div>
         <div>
-          <label for="filtroFechaHasta" class="block mb-1 font-semibold text-sm">Fecha hasta</label>
+          <label for="filtroFechaHasta" class="block mb-1 font-semibold text-sm" data-i18n="qry.filters.date_to">Fecha hasta</label>
           <input type="date" id="filtroFechaHasta" class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" x-model="filtros.hasta">
         </div>
         <div>
-          <label for="filtroUbicacion" class="block mb-1 font-semibold text-sm">Ubicación</label>
+          <label for="filtroUbicacion" class="block mb-1 font-semibold text-sm" data-i18n="qry.filters.location">Ubicación</label>
           <select id="filtroUbicacion" class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none" x-model="filtros.ubicacion">
             <option value="">Todas</option>
             <option value="torre-norte">Torre Norte</option>
@@ -48,29 +48,29 @@
         </div>
       </div>
       <div class="flex gap-2 flex-wrap">
-        <button class="btn-primary" @click="aplicarFiltros()" data-tooltip="Filtre los datos según los criterios seleccionados">🔍 Aplicar filtros</button>
-        <button class="btn-ghost" @click="limpiarFiltros()" data-tooltip="Borre todos los filtros y muestre todos los registros">🧹 Limpiar</button>
+        <button class="btn-primary" @click="aplicarFiltros()" data-tooltip="Filtre los datos según los criterios seleccionados" data-i18n="qry.filters.apply">🔍 Aplicar filtros</button>
+        <button class="btn-ghost" @click="limpiarFiltros()" data-tooltip="Borre todos los filtros y muestre todos los registros" data-i18n="qry.filters.clear">🧹 Limpiar</button>
       </div>
     </fieldset>
 
     <div class="card-modern mb-6">
-      <h2 class="text-base font-semibold mb-3">Datos Filtrados</h2>
+      <h2 class="text-base font-semibold mb-3" data-i18n="qry.results.title">Datos Filtrados</h2>
       <p class="text-xs text-muted mb-3" x-text="`Mostrando ${datosFiltrados.length} de ${lecturas.length} registros.`"></p>
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto max-h-[400px] overflow-y-auto">
         <table class="w-full text-sm">
-          <thead>
-            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Sensor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ubicación</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Notas</th></tr>
+          <thead class="sticky top-0 bg-gray-50">
+            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.table.date">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.table.sensor">Sensor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.table.value">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.table.location">Ubicación</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.table.notes">Notas</th></tr>
           </thead>
           <tbody>
             <template x-if="datosFiltrados.length === 0">
-              <tr><td colspan="5" class="px-3 py-2.5 text-center text-muted">No se encontraron registros. Ajuste los filtros o cargue lecturas.</td></tr>
+              <tr><td colspan="5" class="px-3 py-2.5 text-center text-muted" data-i18n="qry.table.empty">No se encontraron registros. Ajuste los filtros o cargue lecturas.</td></tr>
             </template>
             <template x-for="(l, idx) in datosFiltrados" :key="idx">
               <tr>
                 <td class="px-3 py-2.5 border-b border-border" x-text="formatearFecha(l.fecha)"></td>
                 <td class="px-3 py-2.5 border-b border-border" x-text="l.sensor"></td>
-                <td class="px-3 py-2.5 border-b border-border" x-text="l.valor + ' ' + (l.unidad || '')"></td>
-                <td class="px-3 py-2.5 border-b border-border" x-text="l.ubicacion || '—'"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="l.valor + ' ' + translateSeed(l.unidad || '')"></td>
+                <td class="px-3 py-2.5 border-b border-border" x-text="translateSeed(l.ubicacion) || '—'"></td>
                 <td class="px-3 py-2.5 border-b border-border text-xs" x-text="l.notas || '—'"></td>
               </tr>
             </template>
@@ -80,14 +80,14 @@
     </div>
 
     <div class="card-modern mb-6">
-      <h2 class="text-base font-semibold mb-3">Comparativa entre Zonas</h2>
-      <div class="context-bar">
+      <h2 class="text-base font-semibold mb-3" data-i18n="qry.compare.title">Comparativa entre Zonas</h2>
+      <div class="context-bar" data-i18n="query.compare.context">
         Esta tabla muestra los promedios de cada parámetro por zona de monitoreo.
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead>
-            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Zona</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Temperatura</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Humedad</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Calidad del Aire</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ruido</th></tr>
+          <thead class="sticky top-0 bg-gray-50">
+            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.compare.zone">Zona</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.compare.temp">Temperatura</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.compare.hum">Humedad</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.compare.aqi">Calidad del Aire</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="qry.compare.ruido">Ruido</th></tr>
           </thead>
           <tbody>
             <template x-for="(z, idx) in comparativa" :key="idx">
@@ -105,16 +105,16 @@
     </div>
 
     <div class="card-modern">
-      <h2 class="text-base font-semibold mb-3">🤖 Análisis de Datos con IA</h2>
+      <h2 class="text-base font-semibold mb-3" data-i18n="qry.ai.title">🤖 Análisis de Datos con IA</h2>
       <div class="context-bar">
         Genera un análisis textual automático basado en los datos filtrados.
       </div>
-      <button class="btn-primary mb-3" @click="analizarIA()">Generar análisis</button>
+      <button class="btn-primary mb-3" @click="analizarIA()" data-i18n="qry.ai.generate">Generar análisis</button>
       <div id="analisisIA" class="bg-gray-50 p-4 rounded-lg text-sm min-h-[60px]" :aria-busy="analizando ? 'true' : 'false'" x-text="analisisTexto">Presione "Generar análisis" para obtener un resumen inteligente.</div>
     </div>
   </main>
   <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
-    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+    <p><span data-i18n="footer.copy">SMAI</span> &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -124,10 +124,13 @@
     import Alpine from '/src/js/main.js';
     import { getFromLS, saveToLS, showNotification } from '/src/js/utils.js';
     import { protectPage } from '/src/js/auth.js';
+    import { translateSeed } from '/src/js/seed-data.js';
+
+    function t(k, p={}) { let s = window.SMAI?.t?.(k) || k; if(p) Object.entries(p).forEach(([key,val]) => s = s.replace(new RegExp('\\{'+key+'\\}','g'), val)); return s; }
 
     protectPage();
 
-    const ubicNames = { 'torre-norte': 'Torre Norte', 'rio-principal': 'Río Principal', 'centro-urbano': 'Centro Urbano', 'zona-industrial': 'Zona Industrial' };
+    const ubicNames = { 'torre-norte': t('location.torre-norte'), 'rio-principal': t('location.rio-principal'), 'centro-urbano': t('location.centro-urbano'), 'zona-industrial': t('location.zona-industrial') };
     const sensorUbic = { 'ST-001': 'torre-norte', 'SH-002': 'rio-principal', 'SA-003': 'centro-urbano', 'SR-004': 'zona-industrial' };
 
     Alpine.data('consultaApp', () => ({
@@ -137,6 +140,7 @@
       analizando: false,
       analisisTexto: 'Presione "Generar análisis" para obtener un resumen inteligente.',
       ubicNames,
+      translateSeed,
 
       init() {
         this.lecturas = getFromLS('smai_lecturas');
@@ -156,14 +160,14 @@
         if (this.filtros.hasta) datos = datos.filter(l => new Date(l.fecha) <= new Date(this.filtros.hasta + 'T23:59:59'));
         if (this.filtros.ubicacion) datos = datos.filter(l => (sensorUbic[l.sensor] || '') === this.filtros.ubicacion);
         this.datosFiltrados = datos;
-        showNotification('Filtros aplicados: ' + datos.length + ' registros.', 'success');
+        showNotification(t('qry.notif.applied', {count: datos.length}), 'success');
       },
 
       limpiarFiltros() {
         this.filtros = { desde: '', hasta: '', ubicacion: '' };
         sessionStorage.removeItem('smai_filtros_consulta');
         this.datosFiltrados = [...this.lecturas];
-        showNotification('Filtros limpiados.', 'success');
+        showNotification(t('qry.notif.cleared'), 'success');
       },
 
       get comparativa() {
@@ -192,11 +196,11 @@
       analizarIA() {
         const datos = this.datosFiltrados;
         if (datos.length === 0) {
-          this.analisisTexto = 'No hay datos para analizar. Ajuste los filtros.';
+          this.analisisTexto = t('qry.ai.no_data');
           return;
         }
         this.analizando = true;
-        this.analisisTexto = 'Analizando...';
+        this.analisisTexto = t('qry.ai.analyzing');
         setTimeout(() => {
           const sensoresU = [...new Set(datos.map(l => l.sensor))];
           const total = datos.length;

@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 
+import './i18n.js';
 import './utils.js';
 import './auth.js';
 import './seed-data.js';

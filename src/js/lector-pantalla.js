@@ -1,5 +1,7 @@
 const SPEED_KEY = 'smai_reader_speed';
 
+function t(key) { return window.SMAI?.t?.(key) || key; }
+
 const READABLE_TAGS = ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'LI', 'A', 'BUTTON', 'LABEL', 'TH', 'TD', 'FIGCAPTION', 'LEGEND'];
 const HEADING_TAGS = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
@@ -50,22 +52,22 @@ function getReadableElements() {
 
 function getRole(el) {
   const tag = el.tagName;
-  if (el.hasAttribute('aria-label')) return 'con etiqueta';
-  if (HEADING_TAGS.includes(tag)) return `encabezado ${tag[1]}`;
-  if (tag === 'P') return 'párrafo';
-  if (tag === 'LI') return 'elemento de lista';
-  if (tag === 'A') return 'enlace';
-  if (tag === 'BUTTON') return 'botón';
-  if (tag === 'LABEL') return 'etiqueta';
-  if (tag === 'TH' || tag === 'TD') return 'celda de tabla';
-  if (tag === 'FIGCAPTION') return 'descripción de imagen';
-  if (tag === 'LEGEND') return 'leyenda';
-  return 'contenido';
+  if (el.hasAttribute('aria-label')) return t('reader.role.labeled');
+  if (HEADING_TAGS.includes(tag)) return t('reader.role.heading', { level: tag[1] });
+  if (tag === 'P') return t('reader.role.paragraph');
+  if (tag === 'LI') return t('reader.role.listitem');
+  if (tag === 'A') return t('reader.role.link');
+  if (tag === 'BUTTON') return t('reader.role.button');
+  if (tag === 'LABEL') return t('reader.role.label');
+  if (tag === 'TH' || tag === 'TD') return t('reader.role.cell');
+  if (tag === 'FIGCAPTION') return t('reader.role.figcaption');
+  if (tag === 'LEGEND') return t('reader.role.legend');
+  return t('reader.role.content');
 }
 
 function getAltText(el) {
   const img = el.querySelector('img[alt]');
-  if (img && img.alt) return 'Imagen: ' + img.alt;
+  if (img && img.alt) return t('reader.image_prefix') + img.alt;
   const figcaption = el.querySelector('figcaption');
   if (figcaption) return figcaption.textContent.trim();
   return '';
@@ -104,7 +106,8 @@ function speakNow(text, callback) {
   state.speaking = true;
   state.paused = false;
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'es-ES';
+  const lang = window.SMAI?.getLang?.() || 'es';
+  u.lang = lang === 'es' ? 'es-ES' : 'en-US';
   u.rate = getSpeed();
   u.volume = 1;
   u.onend = () => {
@@ -130,7 +133,7 @@ function readNext() {
   if (state.currentIndex < state.elements.length - 1) {
     readElement(state.currentIndex + 1);
   } else {
-    updateStatus('Fin de la página.');
+    updateStatus(t('reader.end'));
   }
 }
 
@@ -138,14 +141,14 @@ function readPrev() {
   if (state.currentIndex > 0) {
     readElement(state.currentIndex - 1);
   } else {
-    updateStatus('Principio de la página.');
+    updateStatus(t('reader.start'));
   }
 }
 
 function readPage() {
   state.elements = getReadableElements();
   if (!state.elements.length) {
-    updateStatus('No hay contenido legible.');
+    updateStatus(t('reader.no_content'));
     return;
   }
   readElement(0);
@@ -154,7 +157,7 @@ function readPage() {
 function readSelection() {
   const sel = window.getSelection();
   const text = sel ? sel.toString().trim() : '';
-  if (!text) { updateStatus('No hay texto seleccionado.'); return; }
+  if (!text) { updateStatus(t('reader.no_selection')); return; }
   speakNow(text);
 }
 
@@ -209,23 +212,23 @@ function buildReaderUI() {
   const container = document.createElement('div');
   container.id = 'reader-bar';
   container.setAttribute('role', 'region');
-  container.setAttribute('aria-label', 'Lector de pantalla');
+  container.setAttribute('aria-label', t('reader.label'));
   container.style.display = 'none';
   container.innerHTML = `
     <div id="reader-inner">
-      <span id="reader-label">🔊 Lector</span>
-      <button id="reader-prev" aria-label="Elemento anterior" title="Elemento anterior (Ctrl+Shift+Arriba)">⏮</button>
-      <button id="reader-play" aria-label="Reproducir o pausar" title="Reproducir / Pausar (Ctrl+Shift+Espacio)">▶</button>
-      <button id="reader-stop" aria-label="Detener" title="Detener (Ctrl+Shift+Escape)">⏹</button>
-      <button id="reader-next" aria-label="Elemento siguiente" title="Elemento siguiente (Ctrl+Shift+Abajo)">⏭</button>
+      <span id="reader-label">🔊 ${t('reader.label')}</span>
+      <button id="reader-prev" aria-label="${t('reader.prev')}" title="Elemento anterior (Ctrl+Shift+Arriba)">⏮</button>
+      <button id="reader-play" aria-label="${t('reader.play')}" title="Reproducir / Pausar (Ctrl+Shift+Espacio)">▶</button>
+      <button id="reader-stop" aria-label="${t('reader.stop')}" title="Detener (Ctrl+Shift+Escape)">⏹</button>
+      <button id="reader-next" aria-label="${t('reader.next')}" title="Elemento siguiente (Ctrl+Shift+Abajo)">⏭</button>
       <label class="reader-speed-label">
-        Vel:
-        <input type="range" id="reader-speed" min="0.3" max="2" step="0.1" value="${getSpeed()}" aria-label="Velocidad de lectura">
+        ${t('reader.speed')}
+        <input type="range" id="reader-speed" min="0.3" max="2" step="0.1" value="${getSpeed()}" aria-label="${t('reader.speed')}">
         <span id="reader-speed-val">${getSpeed().toFixed(1)}x</span>
       </label>
-      <button id="reader-hover" aria-label="Leer al pasar el mouse" aria-pressed="false" title="Leer al pasar el mouse">🖱 Leer hover</button>
-      <button id="reader-page" aria-label="Leer página completa">📄 Leer página</button>
-      <button id="reader-selection" aria-label="Leer selección">📝 Leer selección</button>
+      <button id="reader-hover" aria-label="${t('reader.hover')}" aria-pressed="false" title="${t('reader.hover')}">🖱 ${t('reader.hover')}</button>
+      <button id="reader-page" aria-label="${t('reader.page')}">📄 ${t('reader.page')}</button>
+      <button id="reader-selection" aria-label="${t('reader.selection')}">📝 ${t('reader.selection')}</button>
       <span id="reader-status" aria-live="polite" role="status" class="sr-only"></span>
     </div>
   `;
@@ -370,9 +373,10 @@ export function enableReader() {
 
   const firstHeading = document.querySelector('h1, h2');
   const msg = firstHeading ? firstHeading.textContent.trim() : '';
-  const text = msg ? 'Lector de pantalla activado. Página: ' + msg : 'Lector de pantalla activado.';
+  const text = msg ? t('reader.activated') + msg : t('reader.activated');
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'es-ES';
+  const lang = window.SMAI?.getLang?.() || 'es';
+  u.lang = lang === 'es' ? 'es-ES' : 'en-US';
   u.rate = getSpeed();
   u.volume = 1;
   state.utterance = u;

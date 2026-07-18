@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,33 +7,33 @@
   <link rel="stylesheet" href="/src/css/style.css">
 </head>
 <body>
-  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <a href="#main" class="skip-link" data-i18n="skip">Saltar al contenido principal</a>
   <header class="app-header">
     <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
-    <nav aria-label="Navegación principal"></nav>
+    <nav aria-label="Main navigation"></nav>
   </header>
   <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="dashboardApp()">
     <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
-      <h2 class="text-lg font-semibold">Dashboard de Monitoreo</h2>
+      <h2 class="text-lg font-semibold" data-i18n="dash.title">Dashboard de Monitoreo</h2>
       <div class="flex gap-2">
-        <button class="btn-success" data-tooltip="Descarga un archivo PDF con las lecturas actuales" @click="exportPDF('dashboard')"><span aria-hidden="true">📄</span> Generar reporte PDF</button>
-        <button class="btn-primary" data-tooltip="Descarga un archivo Excel con las lecturas actuales" @click="exportExcel('dashboard')"><span aria-hidden="true">📊</span> Descargar Excel</button>
+        <button class="btn-success" data-tooltip="Descarga un archivo PDF con las lecturas actuales" @click="exportPDF('dashboard')" data-i18n="dash.pdf"><span aria-hidden="true">📄</span> Generar reporte PDF</button>
+        <button class="btn-primary" data-tooltip="Descarga un archivo Excel con las lecturas actuales" @click="exportExcel('dashboard')" data-i18n="dash.excel"><span aria-hidden="true">📊</span> Descargar Excel</button>
       </div>
     </div>
 
     <figure class="text-center mb-4">
-      <img src="/assets/img/red-sensores.png" alt="Red de sensores desplegados por zona: Torre Norte, Río Principal, Centro Urbano, Zona Industrial conectados al Centro de Control SMAI" class="max-w-full h-auto rounded-lg inline-block">
-      <figcaption class="text-xs text-muted mt-1.5">Red de sensores desplegados — las lecturas se transmiten al centro de control SMAI</figcaption>
+      <img src="/assets/img/red-sensores.png" alt="Red de sensores desplegados por zona: Torre Norte, Río Principal, Centro Urbano, Zona Industrial conectados al Centro de Control SMAI" data-i18n-attr="alt:dash.network.alt" class="max-w-full h-auto rounded-lg inline-block">
+      <figcaption class="text-xs text-muted mt-1.5" data-i18n="dash.network.caption">Red de sensores desplegados — las lecturas se transmiten al centro de control SMAI</figcaption>
     </figure>
 
     <div class="flex gap-4 flex-wrap mb-6">
-      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalLecturas">0</div><div class="stat-label">Lecturas registradas</div></div>
-      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalSensores">0</div><div class="stat-label">Sensores activos</div></div>
-      <div class="stat-card danger"><div class="stat-value text-danger" x-text="totalAlertas">0</div><div class="stat-label">Alertas activas</div></div>
-      <div class="stat-card primary"><div class="stat-value text-primary" x-text="diasConDatos">0</div><div class="stat-label">Días con datos</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalLecturas">0</div><div class="stat-label" data-i18n="dash.stat.readings">Lecturas registradas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalSensores">0</div><div class="stat-label" data-i18n="dash.stat.sensors">Sensores activos</div></div>
+      <div class="stat-card danger"><div class="stat-value text-danger" x-text="totalAlertas">0</div><div class="stat-label" data-i18n="dash.stat.alerts">Alertas activas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="diasConDatos">0</div><div class="stat-label" data-i18n="dash.stat.days">Días con datos</div></div>
     </div>
 
-    <div class="context-bar" id="contextGeneral">
+    <div class="context-bar" id="contextGeneral" data-i18n="dash.context.general">
       Resumen general del sistema de monitoreo. Las métricas superiores muestran el promedio general de cada variable ambiental medida por todos los sensores desplegados.
     </div>
 
@@ -42,14 +42,14 @@
         <div class="stat-card" :style="'border-left-color:'+m.color">
           <div class="stat-value" x-text="m.valor" :style="'color:'+m.color">--</div>
           <div class="stat-label" x-text="m.label"></div>
-          <div class="text-xs text-muted mt-1">Promedio general</div>
+          <div class="text-xs text-muted mt-1" data-i18n="dash.avg">Promedio general</div>
         </div>
       </template>
     </div>
 
     <div class="card-modern mb-6">
-      <h2 class="text-base font-semibold mb-3">Últimas Lecturas por Sensor</h2>
-      <div class="context-bar" id="contextSensores">
+      <h2 class="text-base font-semibold mb-3" data-i18n="dash.sensor.title">Últimas Lecturas por Sensor</h2>
+      <div class="context-bar" id="contextSensores" data-i18n="dash.sensor.context">
         Cada tarjeta representa un sensor físico. Muestra la lectura más reciente y su estado.
       </div>
       <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
@@ -64,8 +64,8 @@
     </div>
 
     <div class="card-modern mb-6">
-      <h2 class="text-base font-semibold mb-3">Tendencias de Temperatura (Últimos 7 días)</h2>
-      <div class="context-bar">
+      <h2 class="text-base font-semibold mb-3" data-i18n="dash.chart.title">Tendencias de Temperatura (Últimos 7 días)</h2>
+      <div class="context-bar" data-i18n="dash.chart.context">
         Este gráfico muestra el promedio diario de temperatura del sensor ST-001 (Torre Norte) durante la última semana.
       </div>
       <div class="min-h-[280px] flex items-center justify-center">
@@ -75,34 +75,36 @@
 
     <div class="card-modern">
       <div class="flex justify-between items-center flex-wrap gap-2 mb-3">
-        <h2 class="text-base font-semibold">Alertas Recientes</h2>
-        <button class="btn-danger" @click="simularAlerta()">🚨 Simular alerta</button>
+        <h2 class="text-base font-semibold" data-i18n="dash.recent_alerts">Alertas Recientes</h2>
+        <button class="btn-danger" @click="simularAlerta()" data-i18n="dash.simulate_alert">🚨 Simular alerta</button>
       </div>
-      <div class="context-bar">
+      <div class="context-bar" data-i18n="dash.recent_alerts.context">
         Las alertas se generan automáticamente cuando una lectura supera los umbrales configurados.
       </div>
+      <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
       <table class="w-full text-sm">
-        <thead>
-          <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Parámetro</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Ubicación</th></tr>
+        <thead class="sticky top-0 bg-gray-50">
+          <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.date">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.param">Parámetro</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.value">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.location">Ubicación</th></tr>
         </thead>
         <tbody>
           <template x-if="alertasRecientes.length === 0">
-            <tr><td colspan="4" class="px-3 py-2.5 text-center text-muted">No hay alertas recientes.</td></tr>
+            <tr><td colspan="4" class="px-3 py-2.5 text-center text-muted" data-i18n="dash.table.no_alerts">No hay alertas recientes.</td></tr>
           </template>
           <template x-for="a in alertasRecientes" :key="a.fecha">
             <tr>
               <td class="px-3 py-2.5 border-b border-border" x-text="a.fechaFormateada"></td>
-              <td class="px-3 py-2.5 border-b border-border" x-text="a.parametro"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="translateSeed(a.parametro)"></td>
               <td class="px-3 py-2.5 border-b border-border" x-text="a.valor"></td>
-              <td class="px-3 py-2.5 border-b border-border" x-text="a.ubicacion"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="translateSeed(a.ubicacion)"></td>
             </tr>
           </template>
         </tbody>
       </table>
+      </div>
     </div>
   </main>
   <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
-    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+    <p><span data-i18n="footer.copy">SMAI</span> &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
@@ -113,7 +115,9 @@
     import Alpine from '/src/js/main.js';
     import { getFromLS } from '/src/js/utils.js';
     import { protectPage } from '/src/js/auth.js';
-    import { simularAlerta } from '/src/js/seed-data.js';
+    import { simularAlerta, translateSeed } from '/src/js/seed-data.js';
+
+    function t(k, p={}) { let s = window.SMAI?.t?.(k) || k; if(p) Object.entries(p).forEach(([key,val]) => s = s.replace(new RegExp('\\{'+key+'\\}','g'), val)); return s; }
 
     protectPage();
 
@@ -129,7 +133,8 @@
     Alpine.data('dashboardApp', () => ({
       lecturas: [],
       alertas: [],
-      sensores: SENSORES.map(s => ({ ...s, valorMostrado: '--', estado: 'Cargando...', badgeCls: 'badge-secondary' })),
+      translateSeed,
+      sensores: SENSORES.map(s => ({ ...s, valorMostrado: '--', estado: t('dash.sensor.loading'), badgeCls: 'badge-secondary' })),
 
       get totalLecturas() { return this.lecturas.length; },
       get totalSensores() { return new Set(this.lecturas.map(l => l.sensor)).size; },
@@ -167,12 +172,15 @@
         this.lecturas.forEach(l => ultimas[l.sensor] = l);
         this.sensores = this.sensores.map(s => {
           const ult = ultimas[s.id];
-          if (!ult) return { ...s, valorMostrado: '--', estado: 'Sin datos', badgeCls: 'badge-secondary' };
-          const enAlerta = this.alertas.some(a => a.valor.includes(String(ult.valor)));
+          if (!ult) return { ...s, valorMostrado: '--', estado: t('dash.sensor.no_data'), badgeCls: 'badge-secondary' };
+          const enAlerta = this.alertas.some(a => {
+            if (a.sensor && ult.sensor) return a.sensor === ult.sensor && parseFloat(a.valor) === parseFloat(ult.valor);
+            return a.valor === String(ult.valor) || parseFloat(a.valor) === parseFloat(ult.valor);
+          });
           return {
             ...s,
             valorMostrado: ult.valor + ' ' + s.unidad,
-            estado: enAlerta ? 'Alerta' : 'Normal',
+            estado: enAlerta ? t('dash.sensor.alert') : t('dash.sensor.normal'),
             badgeCls: enAlerta ? 'badge-danger' : 'badge-success'
           };
         });
@@ -194,7 +202,8 @@
           const prom = temps.length > 0 ? (temps.reduce((a,b) => a + b.valor, 0) / temps.length) : null;
           dias.push(prom !== null ? Math.round(prom * 10) / 10 : null);
         }
-        const labels = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+        const isEn = window.SMAI?.getLang?.() === 'en';
+        const dayLabels = isEn ? ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] : ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
         const today = new Date();
         const labelIndices = [];
         for (let i = 6; i >= 0; i--) {
@@ -204,7 +213,7 @@
         tempChartInstance = new Chart(ctx, {
           type: 'bar',
           data: {
-            labels: labelIndices.map(i => labels[i]),
+            labels: labelIndices.map(i => dayLabels[i]),
             datasets: [{
               label: 'Temperatura (°C)',
               data: dias,

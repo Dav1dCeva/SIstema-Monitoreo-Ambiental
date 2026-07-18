@@ -12,14 +12,36 @@ export function showNotification(message, type = 'success') {
   el.className = `notification notification-${type}`;
   el.setAttribute('role', 'status');
   el.textContent = message;
+
+  const isNoTiming = (() => {
+    try {
+      const prefs = JSON.parse(localStorage.getItem('accesibilidad_prefs'));
+      return prefs?.noTiming === true;
+    } catch(e) { return false; }
+  })();
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'notif-close';
+  closeBtn.innerHTML = '&times;';
+  closeBtn.setAttribute('aria-label', 'Cerrar');
+  closeBtn.style.cssText = 'margin-left:auto;background:none;border:none;color:inherit;cursor:pointer;font-size:16px;padding:0 4px;';
+  closeBtn.addEventListener('click', () => el.remove());
+  el.appendChild(closeBtn);
+  el.style.display = 'flex';
+  el.style.alignItems = 'center';
+
+  if (!isNoTiming) {
+    setTimeout(() => el.remove(), 5000);
+  }
+
   container.appendChild(el);
-  setTimeout(() => el.remove(), 5000);
 }
 
 window.showNotification = showNotification;
 
 export function confirmAction(title, message) {
   return new Promise(resolve => {
+    const t = window.SMAI?.t || (k => k);
     const prevFocus = document.activeElement;
     const overlay = document.createElement('div');
     overlay.className = 'confirm-overlay';
@@ -31,8 +53,8 @@ export function confirmAction(title, message) {
         <h3>${title}</h3>
         <p>${message}</p>
         <div class="btn-group">
-          <button class="px-4 py-1.5 rounded text-sm font-semibold cursor-pointer bg-green-600 text-white hover:opacity-85 border-none" id="confirm-yes">Sí, confirmar</button>
-          <button class="px-4 py-1.5 rounded text-sm font-semibold cursor-pointer bg-gray-600 text-white hover:opacity-85 border-none" id="confirm-no">Cancelar</button>
+          <button class="btn-success" id="confirm-yes">${t('confirm.yes')}</button>
+          <button class="btn-ghost" id="confirm-no">${t('confirm.no')}</button>
         </div>
       </div>`;
     document.body.appendChild(overlay);
@@ -41,13 +63,26 @@ export function confirmAction(title, message) {
     function cleanup() {
       document.removeEventListener('keydown', handler);
       overlay.remove();
-      if (prevFocus) prevFocus.focus();
+      if (prevFocus && prevFocus.focus) prevFocus.focus();
+    }
+
+    function handler(e) {
+      if (e.key === 'Escape') { cleanup(); resolve(false); return; }
+      if (e.key === 'Tab') {
+        const focusable = overlay.querySelectorAll('button');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first.focus();
+        }
+      }
     }
 
     document.getElementById('confirm-yes').addEventListener('click', () => { cleanup(); resolve(true); });
     document.getElementById('confirm-no').addEventListener('click', () => { cleanup(); resolve(false); });
     overlay.addEventListener('click', e => { if (e.target === overlay) { cleanup(); resolve(false); } });
-    function handler(e) { if (e.key === 'Escape') { cleanup(); resolve(false); } }
     document.addEventListener('keydown', handler);
   });
 }

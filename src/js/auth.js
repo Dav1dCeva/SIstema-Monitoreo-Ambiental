@@ -13,27 +13,41 @@ const ACCESS = {
   'sitemap.html':         ['admin','consultor','tecnico']
 };
 
-const NAV = {
-  admin: [
-    { href: '/index.html', label: 'Inicio' },
-    { href: '/src/pages/dashboard.html', label: 'Dashboard' },
-    { href: '/src/pages/umbrales.html', label: 'Umbrales' },
-    { href: '/src/pages/consulta-datos.html', label: 'Consultar datos' },
-    { href: '/src/pages/alertas.html', label: 'Alertas' },
-    { href: '/src/pages/reporte-fallas.html', label: 'Reportar falla' },
-    { href: '/src/pages/lecturas-manuales.html', label: 'Lecturas manuales' }
-  ],
-  consultor: [
-    { href: '/index.html', label: 'Inicio' },
-    { href: '/src/pages/dashboard.html', label: 'Dashboard' },
-    { href: '/src/pages/consulta-datos.html', label: 'Consultar datos' },
-    { href: '/src/pages/alertas.html', label: 'Alertas' }
-  ],
-  tecnico: [
-    { href: '/index.html', label: 'Inicio' },
-    { href: '/src/pages/lecturas-manuales.html', label: 'Lecturas manuales' },
-    { href: '/src/pages/reporte-fallas.html', label: 'Reportar falla' }
-  ]
+function getNavKeys(role) {
+  const t = window.SMAI?.t || (k => k);
+  const NAV = {
+    admin: [
+      { href: '/index.html', labelKey: 'nav.home' },
+      { href: '/src/pages/dashboard.html', labelKey: 'nav.dashboard' },
+      { href: '/src/pages/umbrales.html', labelKey: 'nav.thresholds' },
+      { href: '/src/pages/consulta-datos.html', labelKey: 'nav.query' },
+      { href: '/src/pages/alertas.html', labelKey: 'nav.alerts' },
+      { href: '/src/pages/reporte-fallas.html', labelKey: 'nav.reports' },
+      { href: '/src/pages/lecturas-manuales.html', labelKey: 'nav.readings' }
+    ],
+    consultor: [
+      { href: '/index.html', labelKey: 'nav.home' },
+      { href: '/src/pages/dashboard.html', labelKey: 'nav.dashboard' },
+      { href: '/src/pages/consulta-datos.html', labelKey: 'nav.query' },
+      { href: '/src/pages/alertas.html', labelKey: 'nav.alerts' }
+    ],
+    tecnico: [
+      { href: '/index.html', labelKey: 'nav.home' },
+      { href: '/src/pages/lecturas-manuales.html', labelKey: 'nav.readings' },
+      { href: '/src/pages/reporte-fallas.html', labelKey: 'nav.reports' }
+    ]
+  };
+  return (NAV[role] || NAV.admin).map(l => ({ href: l.href, label: t(l.labelKey) }));
+}
+
+const SHORTCUTS = {
+  '/index.html': 'Alt+1 / Ctrl+Shift+1',
+  '/src/pages/dashboard.html': 'Alt+2 / Ctrl+Shift+2',
+  '/src/pages/umbrales.html': 'Alt+3 / Ctrl+Shift+3',
+  '/src/pages/consulta-datos.html': 'Alt+4 / Ctrl+Shift+4',
+  '/src/pages/alertas.html': 'Alt+5 / Ctrl+Shift+5',
+  '/src/pages/reporte-fallas.html': 'Alt+6 / Ctrl+Shift+6',
+  '/src/pages/lecturas-manuales.html': 'Alt+7 / Ctrl+Shift+7'
 };
 
 export function login(email, role) {
@@ -80,27 +94,19 @@ export function requireAccess() {
   const page = window.location.pathname.split('/').pop() || 'index.html';
   if (page === 'login.html') return;
   if (isLoggedIn() && !hasAccess(page)) {
-    window.showNotification?.('No tienes permisos para acceder a esta sección.', 'error');
+    const t = window.SMAI?.t || (k => k);
+    window.showNotification?.(t('notif.login'), 'error');
     setTimeout(() => { window.location.href = '/index.html'; }, 1500);
   }
 }
 
-const SHORTCUTS = {
-  '/index.html': 'Alt+1 / Ctrl+Shift+1',
-  '/src/pages/dashboard.html': 'Alt+2 / Ctrl+Shift+2',
-  '/src/pages/umbrales.html': 'Alt+3 / Ctrl+Shift+3',
-  '/src/pages/consulta-datos.html': 'Alt+4 / Ctrl+Shift+4',
-  '/src/pages/alertas.html': 'Alt+5 / Ctrl+Shift+5',
-  '/src/pages/reporte-fallas.html': 'Alt+6 / Ctrl+Shift+6',
-  '/src/pages/lecturas-manuales.html': 'Alt+7 / Ctrl+Shift+7'
-};
-
 export function buildNav() {
-  const nav = document.querySelector('nav[aria-label="Navegación principal"]');
+  const nav = document.querySelector('nav[aria-label="Navegación principal"], nav[aria-label="Main navigation"]');
   if (!nav) return;
   const role = getRole();
+  const t = window.SMAI?.t || (k => k);
   if (!role) { nav.innerHTML = ''; return; }
-  const links = NAV[role] || NAV.admin;
+  const links = getNavKeys(role);
   const currentPage = window.location.pathname;
   nav.innerHTML = '';
   const ul = document.createElement('ul');
@@ -112,18 +118,27 @@ export function buildNav() {
     a.textContent = link.label;
     a.className = 'px-3 py-1.5 rounded no-underline text-sm transition-all duration-150 inline-block';
     if (link.href === currentPage) {
-      a.className += ' bg-white/25 text-white font-semibold';
+      a.className += ' active-nav';
     } else {
-      a.className += ' text-white/80 hover:text-white hover:bg-white/15';
+      a.className += ' text-white/80 hover:text-white hover:bg-white/20';
     }
     const sh = SHORTCUTS[link.href];
-    if (sh) a.setAttribute('data-tooltip', 'Ir a ' + link.label + ' (' + sh + ')');
+    if (sh) a.setAttribute('data-tooltip', link.label + ' (' + sh + ')');
     li.appendChild(a);
     ul.appendChild(li);
   });
   nav.appendChild(ul);
+
+  // Right group: lang toggle + user info + logout
   const rightGroup = document.createElement('div');
   rightGroup.className = 'flex items-center gap-1 ml-auto';
+
+  // Language toggle
+  if (window.SMAI?.buildLangToggle) {
+    const langBtn = window.SMAI.buildLangToggle();
+    rightGroup.appendChild(langBtn);
+  }
+
   if (isLoggedIn()) {
     const user = getUser();
     const userSpan = document.createElement('span');
@@ -131,14 +146,15 @@ export function buildNav() {
     userSpan.textContent = user ? `${user.email}` : '';
     rightGroup.appendChild(userSpan);
     const roleBadge = document.createElement('span');
-    const roleName = { admin: 'Admin', consultor: 'Consultor', tecnico: 'Técnico' }[user?.role] || user?.role || '';
+    const roleNameKey = { admin: 'chat.role.admin', consultor: 'chat.role.consultor', tecnico: 'chat.role.tecnico' }[user?.role];
+    const roleName = roleNameKey ? t(roleNameKey) : user?.role || '';
     roleBadge.className = 'text-[10px] px-1.5 py-0.5 rounded-full bg-white/15 text-white/70 mr-1';
     roleBadge.textContent = roleName;
     rightGroup.appendChild(roleBadge);
     const logoutBtn = document.createElement('button');
     logoutBtn.setAttribute('data-action', 'logout');
-    logoutBtn.setAttribute('aria-label', 'Cerrar sesión');
-    logoutBtn.setAttribute('data-tooltip', 'Cerrar sesión');
+    logoutBtn.setAttribute('aria-label', t('nav.logout'));
+    logoutBtn.setAttribute('data-tooltip', t('nav.logout'));
     logoutBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
     logoutBtn.className = 'w-8 h-8 rounded flex items-center justify-center text-white/70 hover:text-white hover:bg-white/15 transition-all duration-150 border-none cursor-pointer';
     rightGroup.appendChild(logoutBtn);
@@ -157,7 +173,8 @@ export function protectPage() {
   const main = document.getElementById('main');
   if (main) main.removeAttribute('hidden');
   if (!hasAccess(page)) {
-    window.showNotification?.('No tienes permisos para acceder a esta sección.', 'error');
+    const t = window.SMAI?.t || (k => k);
+    window.showNotification?.(t('notif.login'), 'error');
     setTimeout(() => { window.location.href = '/index.html'; }, 1500);
   }
 }
@@ -189,7 +206,12 @@ function clearTimers() {
 
 function resetActivity() {
   _lastActivity = Date.now();
-  if (isNoTiming()) return;
+  if (isNoTiming()) {
+    clearTimers();
+    const overlay = document.getElementById('sessionTimeout');
+    if (overlay) overlay.remove();
+    return;
+  }
   clearTimers();
   const overlay = document.getElementById('sessionTimeout');
   if (overlay) overlay.remove();
@@ -197,21 +219,23 @@ function resetActivity() {
 }
 
 function showWarning() {
-  if (isNoTiming()) return;
+  if (isNoTiming()) { clearTimers(); return; }
+  const t = window.SMAI?.t || (k => k);
   const div = document.createElement('div');
   div.className = 'session-timeout';
   div.id = 'sessionTimeout';
   div.setAttribute('timeout', '');
   div.innerHTML = `
-    <div class="session-timeout-dialog" role="dialog" aria-modal="true" aria-label="Sesión próxima a expirar">
-      <h3>⏰ Sesión próxima a expirar</h3>
-      <p>Por inactividad, su sesión cerrará en:</p>
+    <div class="session-timeout-dialog" role="dialog" aria-modal="true" aria-label="${t('timeout.title')}">
+      <h3>⏰ ${t('timeout.title')}</h3>
+      <p>${t('timeout.msg')}</p>
       <div class="countdown" id="countdownDisplay">2:00</div>
-      <button class="btn btn-primary" id="extendBtn" timeout>Extender sesión</button>
+      <button class="btn btn-primary" id="extendBtn" timeout>${t('timeout.extend')}</button>
     </div>`;
   document.body.appendChild(div);
-  document.getElementById('extendBtn').focus();
-  document.getElementById('extendBtn').addEventListener('click', extendSession);
+  const extendBtn = document.getElementById('extendBtn');
+  extendBtn.focus();
+  extendBtn.addEventListener('click', extendSession);
   document.addEventListener('keydown', timeoutKeydown);
   let segundos = 120;
   _countdownId = setInterval(() => {
@@ -269,4 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
       logout();
     }
   });
+  // Rebuild nav on language change
+  window.addEventListener('langchange', () => { buildNav(); });
 });

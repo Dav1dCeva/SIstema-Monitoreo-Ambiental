@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:10.000
+El video muestra la pantalla del módulo Reporte de Fallas con sus tarjetas de estadísticas.
+
+00:00:10.500 --> 00:00:20.000
+Se hace clic en más Nuevo reporte, se llena el formulario con equipo, asunto y descripción, y se guarda.
+
+00:00:20.500 --> 00:00:28.000
+Luego se muestra el cambio de estado a Solucionado desde la tabla de historial.
+
+00:00:28.500 --> 00:00:36.000
+Finalmente se usa más Registrar mantenimiento para registrar una acción de mantenimiento.

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,27 +7,27 @@
   <link rel="stylesheet" href="/src/css/style.css">
 </head>
 <body>
-  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <a href="#main" class="skip-link" data-i18n="skip">Saltar al contenido principal</a>
   <header class="app-header">
     <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
-    <nav aria-label="Navegación principal"></nav>
+    <nav aria-label="Main navigation"></nav>
   </header>
   <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="fallasApp()">
     <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
-      <h2 class="text-lg font-semibold">Reporte de Fallas</h2>
+      <h2 class="text-lg font-semibold" data-i18n="rpt.title">Reporte de Fallas</h2>
       <div class="flex gap-2 flex-wrap">
-        <button class="btn-primary" @click="abrirReportForm()" data-tooltip="Reporte una nueva falla en un equipo">+ Nuevo reporte</button>
-        <button class="btn-primary" @click="abrirMantoForm()">+ Registrar mantenimiento</button>
+        <button class="btn-primary" @click="abrirReportForm()" data-tooltip="Reporte una nueva falla en un equipo" data-i18n="rpt.new_report">+ Nuevo reporte</button>
+        <button class="btn-primary" @click="abrirMantoForm()" data-i18n="rpt.new_maint">+ Registrar mantenimiento</button>
       </div>
     </div>
 
-    <div class="context-bar">
+    <div class="context-bar" data-i18n="rpt.context">
       Reporte fallas en los equipos de monitoreo y registre las acciones de mantenimiento correctivo realizadas.
     </div>
 
     <div class="flex gap-4 flex-wrap mb-6">
-      <div class="stat-card danger"><div class="stat-value text-danger" x-text="pendientes">0</div><div class="stat-label">Pendientes</div></div>
-      <div class="stat-card success"><div class="stat-value text-success" x-text="solucionados">0</div><div class="stat-label">Solucionados</div></div>
+      <div class="stat-card danger"><div class="stat-value text-danger" x-text="pendientes">0</div><div class="stat-label" data-i18n="rpt.stat.pending">Pendientes</div></div>
+      <div class="stat-card success"><div class="stat-value text-success" x-text="solucionados">0</div><div class="stat-label" data-i18n="rpt.stat.solved">Solucionados</div></div>
     </div>
 
     <div class="card-modern mb-6" x-show="showReportForm" x-cloak>
@@ -35,7 +35,7 @@
       <form @submit.prevent="guardarReporte()">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="repEquipo" class="block mb-1 font-semibold text-sm">Equipo/Sensor</label>
+            <label for="repEquipo" class="block mb-1 font-semibold text-sm" data-i18n="rpt.form.equipment">Equipo/Sensor</label>
             <select id="repEquipo" x-model="reporteForm.equipo" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
               <option value="">Seleccione...</option>
               <option value="ST-001">ST-001 - Torre Norte</option>
@@ -46,31 +46,31 @@
             </select>
           </div>
           <div>
-            <label for="repAsunto" class="block mb-1 font-semibold text-sm">Asunto</label>
+            <label for="repAsunto" class="block mb-1 font-semibold text-sm" data-i18n="rpt.form.subject">Asunto</label>
             <input type="text" id="repAsunto" placeholder="Ej: Sensor no reporta" x-model="reporteForm.asunto" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
           </div>
           <div class="md:col-span-2">
-            <label for="repDesc" class="block mb-1 font-semibold text-sm">Descripción</label>
+            <label for="repDesc" class="block mb-1 font-semibold text-sm" data-i18n="rpt.form.description">Descripción</label>
             <textarea id="repDesc" rows="3" placeholder="Describa la falla en detalle" x-model="reporteForm.descripcion" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none"></textarea>
           </div>
         </div>
         <div class="flex gap-2 mt-4">
-          <button type="submit" class="btn-success">Guardar</button>
-          <button type="button" class="btn-ghost" @click="cerrarReportForm()">Cancelar</button>
+          <button type="submit" class="btn-success" data-i18n="rpt.form.save">Guardar</button>
+          <button type="button" class="btn-ghost" @click="cerrarReportForm()" data-i18n="rpt.form.cancel">Cancelar</button>
         </div>
       </form>
     </div>
 
     <div class="card-modern mb-6">
-      <h3 class="text-base font-semibold mb-4">Historial de Reportes</h3>
-      <div class="overflow-x-auto">
+      <h3 class="text-base font-semibold mb-4" data-i18n="rpt.history.reports">Historial de Reportes</h3>
+      <div class="overflow-x-auto max-h-[400px] overflow-y-auto">
         <table class="w-full text-sm">
-          <thead>
-            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Equipo</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Asunto</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Estado</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Acción</th></tr>
+          <thead class="sticky top-0 bg-gray-50">
+            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.table.date">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.table.equipment">Equipo</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.table.subject">Asunto</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.table.status">Estado</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.table.action">Acción</th></tr>
           </thead>
           <tbody>
             <template x-if="reportes.length === 0">
-              <tr><td colspan="5" class="px-3 py-2.5 text-center text-muted">No hay reportes de fallas registrados.</td></tr>
+              <tr><td colspan="5" class="px-3 py-2.5 text-center text-muted" data-i18n="rpt.table.empty">No hay reportes de fallas registrados.</td></tr>
             </template>
             <template x-for="(r, idx) in reportes" :key="idx">
               <tr>
@@ -78,11 +78,13 @@
                 <td class="px-3 py-2.5 border-b border-border" x-text="r.equipo"></td>
                 <td class="px-3 py-2.5 border-b border-border" x-text="r.asunto"></td>
                 <td class="px-3 py-2.5 border-b border-border">
-                  <span class="badge" :class="r.estado === 'Solucionado' ? 'badge-success' : 'badge-warning'" x-text="r.estado"></span>
+                  <span class="badge" :class="r.estado === 'Solucionado' ? 'badge-success' : 'badge-warning'" x-text="r.estado === 'Solucionado' ? t('rpt.status.solved') : t('rpt.status.pending')"></span>
                 </td>
                 <td class="px-3 py-2.5 border-b border-border">
-                  <button class="btn-warning text-xs px-2.5 py-1" @click="toggleEstado(idx)" x-text="r.estado === 'Solucionado' ? 'Reabrir' : 'Solucionar'"></button>
-                  <button class="btn-danger text-xs px-2.5 py-1" @click="eliminarReporte(idx)">Eliminar</button>
+                  <div class="flex items-center gap-2 whitespace-nowrap">
+                    <button class="btn-warning text-xs" @click="toggleEstado(idx)"><span x-text="r.estado === 'Solucionado' ? t('rpt.btn.reopen') : t('rpt.btn.solve')"></span></button>
+                    <button class="btn-danger text-xs" @click="eliminarReporte(idx)"><span x-text="t('rpt.btn.delete')"></span></button>
+                  </div>
                 </td>
               </tr>
             </template>
@@ -92,11 +94,11 @@
     </div>
 
     <div class="card-modern mb-6" x-show="showMantoForm" x-cloak>
-      <h3 class="text-base font-semibold mb-4">Registrar Mantenimiento</h3>
+      <h3 class="text-base font-semibold mb-4" data-i18n="rpt.form.new_maint">Registrar Mantenimiento</h3>
       <form @submit.prevent="guardarManto()">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="mantoEquipo" class="block mb-1 font-semibold text-sm">Equipo/Sensor</label>
+            <label for="mantoEquipo" class="block mb-1 font-semibold text-sm" data-i18n="rpt.form.equipment">Equipo/Sensor</label>
             <select id="mantoEquipo" x-model="mantoForm.equipo" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
               <option value="">Seleccione...</option>
               <option value="ST-001">ST-001 - Torre Norte</option>
@@ -107,49 +109,51 @@
             </select>
           </div>
           <div>
-            <label for="mantoAccion" class="block mb-1 font-semibold text-sm">Acción realizada</label>
+            <label for="mantoAccion" class="block mb-1 font-semibold text-sm" data-i18n="rpt.form.action">Acción realizada</label>
             <input type="text" id="mantoAccion" placeholder="Ej: Calibración de sensor" x-model="mantoForm.accion" required class="w-full px-3 py-2.5 border-2 border-border rounded text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none">
           </div>
         </div>
         <div class="flex gap-2 mt-4">
-          <button type="submit" class="btn-success">Guardar</button>
-          <button type="button" class="btn-ghost" @click="showMantoForm = false">Cancelar</button>
+          <button type="submit" class="btn-success" data-i18n="rpt.form.save">Guardar</button>
+          <button type="button" class="btn-ghost" @click="showMantoForm = false" data-i18n="rpt.form.cancel">Cancelar</button>
         </div>
       </form>
     </div>
 
     <div class="card-modern mb-6">
-      <h3 class="text-base font-semibold mb-3">Video tutorial: Reporte de Fallas</h3>
+      <h3 class="text-base font-semibold mb-3" data-i18n="rpt.video.title">Video tutorial: Reporte de Fallas</h3>
       <figure>
-        <video controls preload="metadata" aria-label="Video tutorial del módulo Reporte de Fallas" class="w-full rounded">
+        <video controls preload="metadata" aria-label="Video tutorial del módulo Reporte de Fallas" data-i18n-attr="aria-label:rpt.video.alt" class="w-full rounded">
           <source src="/assets/video/0708.mp4" type="video/mp4">
           <track kind="captions" src="/assets/captions/captions-reportes.vtt" srclang="es" label="Español" default>
           <track kind="descriptions" src="/assets/captions/descriptions-reportes.vtt" srclang="es" label="Audiodescripción">
+          <track kind="captions" src="/assets/captions/captions-reportes-en.vtt" srclang="en" label="English">
+          <track kind="descriptions" src="/assets/captions/descriptions-reportes-en.vtt" srclang="en" label="English Audio Description">
         </video>
-        <figcaption class="text-sm text-muted mt-2">Video tutorial: cómo reportar fallas y registrar mantenimientos en SMAI</figcaption>
+        <figcaption class="text-sm text-muted mt-2" data-i18n="rpt.video.caption">Video tutorial: cómo reportar fallas y registrar mantenimientos en SMAI</figcaption>
       </figure>
-      <div class="video-transcript hidden mt-3 p-3 bg-accent/50 rounded border-l-4 border-primary text-sm" role="region" aria-label="Transcripción del video">
-        <h3 class="text-sm font-semibold mb-1.5">Transcripción</h3>
-        <p>En el módulo de Reporte de Fallas podemos gestionar incidentes y mantenimientos de los sensores.</p>
-        <p>Presione "+ Nuevo reporte", seleccione el equipo afectado, escriba un asunto y descripción, y guarde. El reporte queda registrado con estado Pendiente en la tabla de historial, donde puede cambiarlo a Solucionado o eliminarlo.</p>
-        <p>Con "+ Registrar mantenimiento" anote el equipo y la acción realizada para dejar constancia de cada intervención.</p>
+      <div class="video-transcript hidden mt-3 p-3 bg-accent/50 rounded border-l-4 border-primary text-sm" role="region" aria-label="Transcripción del video" data-i18n-attr="aria-label:rpt.transcript.aria">
+        <h3 class="text-sm font-semibold mb-1.5" data-i18n="rpt.transcript.title">Transcripción</h3>
+        <p data-i18n="rpt.transcript.p1">En el módulo de Reporte de Fallas podemos gestionar incidentes y mantenimientos de los sensores.</p>
+        <p data-i18n="rpt.transcript.p2">Presione "+ Nuevo reporte", seleccione el equipo afectado, escriba un asunto y descripción, y guarde. El reporte queda registrado con estado Pendiente en la tabla de historial, donde puede cambiarlo a Solucionado o eliminarlo.</p>
+        <p data-i18n="rpt.transcript.p3">Con "+ Registrar mantenimiento" anote el equipo y la acción realizada para dejar constancia de cada intervención.</p>
       </div>
-      <div class="audio-description hidden mt-3 p-3 bg-amber-50 rounded border-l-4 border-warning text-sm" role="region" aria-label="Audiodescripción del video">
-        <h3 class="text-sm font-semibold mb-1.5">Audiodescripción</h3>
-        <p>El video muestra la pantalla del módulo Reporte de Fallas. Se hace clic en "+ Nuevo reporte", se llena el formulario con equipo, asunto y descripción, y se guarda. Luego se muestra el cambio de estado a Solucionado. Finalmente se usa "+ Registrar mantenimiento" para registrar una acción de mantenimiento.</p>
+      <div class="audio-description hidden mt-3 p-3 bg-amber-50 rounded border-l-4 border-warning text-sm" role="region" aria-label="Audiodescripción del video" data-i18n-attr="aria-label:rpt.audiodesc.aria">
+        <h3 class="text-sm font-semibold mb-1.5" data-i18n="rpt.audiodesc.title">Audiodescripción</h3>
+        <p data-i18n="rpt.audiodesc.p1">El video muestra la pantalla del módulo Reporte de Fallas. Se hace clic en "+ Nuevo reporte", se llena el formulario con equipo, asunto y descripción, y se guarda. Luego se muestra el cambio de estado a Solucionado. Finalmente se usa "+ Registrar mantenimiento" para registrar una acción de mantenimiento.</p>
       </div>
     </div>
 
     <div class="card-modern">
-      <h3 class="text-base font-semibold mb-4">Historial de Mantenimientos</h3>
-      <div class="overflow-x-auto">
+      <h3 class="text-base font-semibold mb-4" data-i18n="rpt.history.maint">Historial de Mantenimientos</h3>
+      <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
         <table class="w-full text-sm">
-          <thead>
-            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Equipo</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col">Acción</th></tr>
+          <thead class="sticky top-0 bg-gray-50">
+            <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.maint.date">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.maint.equipment">Equipo</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="rpt.maint.action">Acción</th></tr>
           </thead>
           <tbody>
             <template x-if="mantos.length === 0">
-              <tr><td colspan="3" class="px-3 py-2.5 text-center text-muted">No hay mantenimientos registrados.</td></tr>
+              <tr><td colspan="3" class="px-3 py-2.5 text-center text-muted" data-i18n="rpt.maint.empty">No hay mantenimientos registrados.</td></tr>
             </template>
             <template x-for="(m, idx) in mantos" :key="idx">
               <tr>
@@ -164,13 +168,16 @@
     </div>
   </main>
   <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
-    <p>SMAI &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+    <p><span data-i18n="footer.copy">SMAI</span> &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a>
   </footer>
 
   <script type="module">
     import Alpine from '/src/js/main.js';
     import { getFromLS, saveToLS, showNotification, confirmAction } from '/src/js/utils.js';
     import { protectPage } from '/src/js/auth.js';
+    import { translateSeed } from '/src/js/seed-data.js';
+
+    function t(k, p={}) { let s = window.SMAI?.t?.(k) || k; if(p) Object.entries(p).forEach(([key,val]) => s = s.replace(new RegExp('\\{'+key+'\\}','g'), val)); return s; }
 
     protectPage();
 
@@ -182,6 +189,7 @@
       showMantoForm: false,
       reporteForm: { equipo: '', asunto: '', descripcion: '' },
       mantoForm: { equipo: '', accion: '' },
+      translateSeed,
 
       get pendientes() { return this.reportes.filter(r => r.estado !== 'Solucionado').length; },
       get solucionados() { return this.reportes.filter(r => r.estado === 'Solucionado').length; },
@@ -206,16 +214,16 @@
       guardarReporte() {
         const f = this.reporteForm;
         if (!f.equipo || !f.asunto || !f.descripcion) {
-          showNotification('Complete todos los campos.', 'error'); return;
+          showNotification(t('rpt.notif.complete'), 'error'); return;
         }
         sessionStorage.setItem('smai_reporte_equipo', f.equipo);
         const datos = { fecha: new Date().toISOString(), equipo: f.equipo, asunto: f.asunto, descripcion: f.descripcion, estado: 'Pendiente' };
         if (this.editandoReporte !== null) {
           Object.assign(this.reportes[this.editandoReporte], datos);
-          showNotification('Reporte actualizado.', 'success');
+          showNotification(t('rpt.notif.updated'), 'success');
         } else {
           this.reportes.push(datos);
-          showNotification('Reporte registrado.', 'success');
+          showNotification(t('rpt.notif.created'), 'success');
         }
         saveToLS('smai_reportes', this.reportes);
         this.cerrarReportForm();
@@ -226,15 +234,15 @@
         if (!r) return;
         r.estado = r.estado === 'Solucionado' ? 'Pendiente' : 'Solucionado';
         saveToLS('smai_reportes', this.reportes);
-        showNotification('Estado cambiado a: ' + r.estado, 'success');
+        showNotification(t('rpt.notif.status', {status: r.estado}), 'success');
       },
 
       eliminarReporte(idx) {
-        confirmAction('Eliminar reporte', '¿Está seguro de eliminar este reporte?').then(r => {
+        confirmAction(t('rpt.confirm.delete_title'), t('rpt.confirm.delete')).then(r => {
           if (r) {
             this.reportes.splice(idx, 1);
             saveToLS('smai_reportes', this.reportes);
-            showNotification('Reporte eliminado.', 'success');
+            showNotification(t('rpt.notif.deleted'), 'success');
           }
         });
       },
@@ -247,11 +255,11 @@
       guardarManto() {
         const f = this.mantoForm;
         if (!f.equipo || !f.accion) {
-          showNotification('Complete todos los campos.', 'error'); return;
+          showNotification(t('rpt.notif.complete'), 'error'); return;
         }
         this.mantos.push({ fecha: new Date().toISOString(), equipo: f.equipo, accion: f.accion });
         saveToLS('smai_mantos', this.mantos);
-        showNotification('Mantenimiento registrado.', 'success');
+        showNotification(t('rpt.notif.maint_saved'), 'success');
         this.showMantoForm = false;
       }
     }));

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,88 +7,90 @@
   <link rel="stylesheet" href="/src/css/style.css">
 </head>
 <body>
-  <a href="#main" class="skip-link">Saltar al contenido principal</a>
+  <a href="#main" class="skip-link" data-i18n="skip">Saltar al contenido principal</a>
   <header class="app-header">
     <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
-    <nav aria-label="Navegación principal"></nav>
-    <a href="/src/pages/login.html" data-auth="login" class="px-4 py-1.5 rounded text-sm font-semibold no-underline bg-white/20 text-white hover:bg-white/30 transition-all duration-150">Iniciar sesión</a>
+    <nav aria-label="Main navigation"></nav>
+    <a href="/src/pages/login.html" data-auth="login" class="px-4 py-1.5 rounded text-sm font-semibold no-underline bg-white/20 text-white hover:bg-white/30 transition-all duration-150" data-i18n="nav.login">Iniciar sesión</a>
   </header>
   <main id="main" class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto">
     <div class="card-modern mb-6">
-      <h2 class="text-lg font-semibold mb-4">Bienvenido al Sistema de Monitoreo Ambiental Inteligente</h2>
-      <p class="text-sm text-muted mb-4">Plataforma para la captura, monitoreo y análisis de datos ambientales en tiempo real. Seleccione un módulo para comenzar.</p>
+      <h2 class="text-lg font-semibold mb-4" data-i18n="portal.welcome">Bienvenido al Sistema de Monitoreo Ambiental Inteligente</h2>
+      <p class="text-sm text-muted mb-4" data-i18n="portal.description">Plataforma para la captura, monitoreo y análisis de datos ambientales en tiempo real. Seleccione un módulo para comenzar.</p>
       <figure class="text-center my-5">
-        <img src="/assets/img/diagrama-flujo-sensores.png" alt="Diagrama de flujo del sistema SMAI: sensores → SMAI → acciones" class="max-w-full h-auto rounded-lg inline-block">
-        <figcaption class="text-xs text-muted mt-1.5">Flujo del sistema: sensores en terreno → plataforma SMAI → acciones del usuario</figcaption>
+        <img src="/assets/img/diagrama-flujo-sensores.png" alt="Diagrama de flujo del sistema SMAI: sensores → SMAI → acciones" data-i18n-attr="alt:portal.flow.alt" class="max-w-full h-auto rounded-lg inline-block">
+        <figcaption class="text-xs text-muted mt-1.5" data-i18n="portal.flow.caption">Flujo del sistema: sensores en terreno → plataforma SMAI → acciones del usuario</figcaption>
       </figure>
     </div>
 
     <div class="card-modern mb-6">
-      <h2 class="text-lg font-semibold mb-3">Tutorial: Cómo usar SMAI</h2>
-      <p class="text-sm text-muted mb-3">Video guía del sistema SMAI: inicio de sesión, dashboard, umbrales, consulta de datos, alertas y exportación de reportes.</p>
+      <h2 class="text-lg font-semibold mb-3" data-i18n="portal.tutorial">Tutorial: Cómo usar SMAI</h2>
+      <p class="text-sm text-muted mb-3" data-i18n="portal.tutorial.desc">Video guía del sistema SMAI: inicio de sesión, dashboard, umbrales, consulta de datos, alertas y exportación de reportes.</p>
       <figure>
-        <video controls preload="metadata" aria-label="Video tutorial del sistema SMAI" class="w-full rounded">
+        <video controls preload="metadata" aria-label="Video tutorial del sistema SMAI" data-i18n-attr="aria-label:portal.tutorial.video.alt" class="w-full rounded">
           <source src="/assets/video/lv_0_20260707213501.mp4" type="video/mp4">
           <track kind="captions" src="/assets/captions/captions-monitoreo.vtt" srclang="es" label="Español" default>
           <track kind="descriptions" src="/assets/captions/descriptions-monitoreo.vtt" srclang="es" label="Audiodescripción">
+          <track kind="captions" src="/assets/captions/captions-monitoreo-en.vtt" srclang="en" label="English">
+          <track kind="descriptions" src="/assets/captions/descriptions-monitoreo-en.vtt" srclang="en" label="English Audio Description">
         </video>
-        <figcaption class="text-sm text-muted mt-2">Video tutorial: cómo usar SMAI paso a paso</figcaption>
+        <figcaption class="text-sm text-muted mt-2" data-i18n="portal.tutorial.video.caption">Video tutorial: cómo usar SMAI paso a paso</figcaption>
       </figure>
-      <div class="video-transcript hidden mt-3 p-3 bg-accent/50 rounded border-l-4 border-primary text-sm" id="transcript-monitoreo" role="region" aria-label="Transcripción del video">
-        <h3 class="text-sm font-semibold mb-1.5">Transcripción</h3>
-        <p>SMAI es el Sistema de Monitoreo Ambiental Inteligente. Una plataforma web para capturar, monitorear y analizar datos ambientales en tiempo real.</p>
-        <p>Inicia sesión con tu correo y selecciona tu rol. Como administrador accedes al Dashboard, el centro de control del sistema.</p>
-        <p>Aquí ves un resumen general: total de lecturas, sensores activos, alertas vigentes. Cada sensor muestra su última lectura y estado. El gráfico semanal ayuda a detectar patrones.</p>
-        <p>En Umbrales configuras los límites de alerta para cada sensor. Presiona "+ Nuevo umbral", selecciona el parámetro, ingresa mínimo y máximo, y guarda. El sistema valida automáticamente las lecturas contra estos valores.</p>
-        <p>Consulta datos históricos con filtros por fecha, parámetro y ubicación. Exporta a PDF o Excel con un solo clic.</p>
-        <p>El módulo de Alertas registra cada vez que una lectura supera los umbrales. Puedes simular una alerta para probar el sistema.</p>
-        <p>SMAI: datos accionables para un futuro sostenible.</p>
+      <div class="video-transcript hidden mt-3 p-3 bg-accent/50 rounded border-l-4 border-primary text-sm" id="transcript-monitoreo" role="region" aria-label="Transcripción del video" data-i18n-attr="aria-label:portal.transcript.aria">
+        <h3 class="text-sm font-semibold mb-1.5" data-i18n="portal.transcript.title">Transcripción</h3>
+        <p data-i18n="portal.transcript.p1">SMAI es el Sistema de Monitoreo Ambiental Inteligente. Una plataforma web para capturar, monitorear y analizar datos ambientales en tiempo real.</p>
+        <p data-i18n="portal.transcript.p2">Inicia sesión con tu correo y selecciona tu rol. Como administrador accedes al Dashboard, el centro de control del sistema.</p>
+        <p data-i18n="portal.transcript.p3">Aquí ves un resumen general: total de lecturas, sensores activos, alertas vigentes. Cada sensor muestra su última lectura y estado. El gráfico semanal ayuda a detectar patrones.</p>
+        <p data-i18n="portal.transcript.p4">En Umbrales configuras los límites de alerta para cada sensor. Presiona "+ Nuevo umbral", selecciona el parámetro, ingresa mínimo y máximo, y guarda. El sistema valida automáticamente las lecturas contra estos valores.</p>
+        <p data-i18n="portal.transcript.p5">Consulta datos históricos con filtros por fecha, parámetro y ubicación. Exporta a PDF o Excel con un solo clic.</p>
+        <p data-i18n="portal.transcript.p6">El módulo de Alertas registra cada vez que una lectura supera los umbrales. Puedes simular una alerta para probar el sistema.</p>
+        <p data-i18n="portal.transcript.p7">SMAI: datos accionables para un futuro sostenible.</p>
       </div>
-      <div class="audio-description hidden mt-3 p-3 bg-amber-50 rounded border-l-4 border-warning text-sm" role="region" aria-label="Audiodescripción del video">
-        <h3 class="text-sm font-semibold mb-1.5">Audiodescripción</h3>
-        <p>El video comienza con el logo de SMAI, luego muestra la pantalla de inicio de sesión donde se ingresa un correo y se selecciona el rol Administrador. Tras iniciar sesión, se recorre el Dashboard con sus tarjetas de métricas, la grilla de sensores con estados y el gráfico de tendencia semanal.</p>
-        <p>A continuación se navega al módulo de Umbrales, se agrega un nuevo umbral para temperatura en Torre Norte con valores mínimos y máximos, y se guarda. Luego se muestra la Consulta de Datos con filtros aplicados y la exportación a PDF.</p>
-        <p>Finalmente se ingresa al módulo de Alertas, se simula una alerta y se observa cómo aparece en el historial. El video cierra con el logo de SMAI y el mensaje "datos accionables para un futuro sostenible".</p>
+      <div class="audio-description hidden mt-3 p-3 bg-amber-50 rounded border-l-4 border-warning text-sm" role="region" aria-label="Audiodescripción del video" data-i18n-attr="aria-label:portal.audiodesc.aria">
+        <h3 class="text-sm font-semibold mb-1.5" data-i18n="portal.audiodesc.title">Audiodescripción</h3>
+        <p data-i18n="portal.audiodesc.p1">El video comienza con el logo de SMAI, luego muestra la pantalla de inicio de sesión donde se ingresa un correo y se selecciona el rol Administrador. Tras iniciar sesión, se recorre el Dashboard con sus tarjetas de métricas, la grilla de sensores con estados y el gráfico de tendencia semanal.</p>
+        <p data-i18n="portal.audiodesc.p2">A continuación se navega al módulo de Umbrales, se agrega un nuevo umbral para temperatura en Torre Norte con valores mínimos y máximos, y se guarda. Luego se muestra la Consulta de Datos con filtros aplicados y la exportación a PDF.</p>
+        <p data-i18n="portal.audiodesc.p3">Finalmente se ingresa al módulo de Alertas, se simula una alerta y se observa cómo aparece en el historial. El video cierra con el logo de SMAI y el mensaje "datos accionables para un futuro sostenible".</p>
       </div>
     </div>
 
     <div class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-5 mt-6">
-      <a href="/src/pages/dashboard.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/dashboard.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Acceda al panel de control con métricas de sensores, gráficos y alertas en tiempo real" aria-label="Ir al Dashboard — panel de control con métricas y gráficos de sensores">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">📊</span>
-        <h3 class="font-semibold mb-2">Dashboard</h3>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.dashboard">Dashboard</h3>
       </a>
-      <a href="/src/pages/umbrales.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/umbrales.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Configure los límites superior e inferior de alerta para cada parámetro ambiental" aria-label="Ir a Gestión de Umbrales — configurar límites de alerta por sensor">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">⚙️</span>
-        <h3 class="font-semibold mb-2">Gestión de Umbrales</h3>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.thresholds">Gestión de Umbrales</h3>
       </a>
-      <a href="/src/pages/consulta-datos.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/consulta-datos.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Busque y filtre datos históricos de sensores, compare zonas y exporte reportes" aria-label="Ir a Consulta de Datos — buscar, filtrar y exportar datos históricos">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔍</span>
-        <h3 class="font-semibold mb-2">Consulta de Datos</h3>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.query">Consulta de Datos</h3>
       </a>
-      <a href="/src/pages/reporte-fallas.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/reporte-fallas.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Registre fallas en los equipos de monitoreo y gestione mantenimientos correctivos" aria-label="Ir a Reporte de Fallas — registrar incidentes y mantenimientos de equipos">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔧</span>
-        <h3 class="font-semibold mb-2">Reporte de Fallas</h3>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.reports">Reporte de Fallas</h3>
       </a>
-      <a href="/src/pages/lecturas-manuales.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/lecturas-manuales.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Ingrese lecturas manuales de sensores desde el campo, con validación de rangos y umbrales" aria-label="Ir a Lecturas Manuales — registrar lecturas de sensores desde el campo">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">📝</span>
-        <h3 class="font-semibold mb-2">Lecturas Manuales</h3>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.readings">Lecturas Manuales</h3>
       </a>
-      <a href="/src/pages/alertas.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/alertas.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Consulte el historial de alertas generadas cuando las lecturas superan los umbrales configurados" aria-label="Ir a Alertas — historial de alertas ambientales">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔔</span>
-        <h3 class="font-semibold mb-2">Alertas</h3>
-        <p class="text-xs text-muted mt-2">Historial de alertas ambientales generadas automáticamente.</p>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.alerts">Alertas</h3>
+        <p class="text-xs text-muted mt-2" data-i18n="portal.card.alerts.desc">Historial de alertas ambientales generadas automáticamente.</p>
       </a>
-      <a href="/src/pages/login.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block">
+      <a href="/src/pages/login.html" class="card-modern text-center no-underline text-gray-900 hover:-translate-y-1 hover:shadow-card-hover block" data-tooltip="Inicie sesión con su correo y seleccione su rol para acceder al sistema" aria-label="Ir a Inicio de Sesión — acceder al sistema con credenciales">
         <span aria-hidden="true" class="text-4xl block mb-3 mt-2">🔐</span>
-        <h3 class="font-semibold mb-2">Inicio de Sesión</h3>
+        <h3 class="font-semibold mb-2" data-i18n="portal.card.login">Inicio de Sesión</h3>
       </a>
     </div>
     <div class="text-center mt-6" id="demoBtnContainer">
-      <button class="px-3 py-1.5 rounded text-sm font-semibold cursor-pointer bg-gray-600 text-white hover:opacity-85 border-none" onclick="restaurarDemo()">🔄 Restaurar datos demo</button>
+      <button class="px-3 py-1.5 rounded text-sm font-semibold cursor-pointer bg-gray-600 text-white hover:opacity-85 border-none" onclick="restaurarDemo()" data-i18n="portal.restore">🔄 Restaurar datos demo</button>
     </div>
   </main>
   <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
-    <p>Sistema de Monitoreo Ambiental Inteligente &copy; 2026 | <a href="/src/pages/sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a></p>
+    <p><span data-i18n="footer.copy">Sistema de Monitoreo Ambiental Inteligente</span> &copy; 2026 | <a href="/src/pages/sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a>
   </footer>
 
   <script type="module">
@@ -96,12 +98,14 @@
     import { confirmAction, showNotification } from '/src/js/utils.js';
     import { seedDemoData } from '/src/js/seed-data.js';
 
+    function t(k, p={}) { let s = window.SMAI?.t?.(k) || k; if(p) Object.entries(p).forEach(([key,val]) => s = s.replace(new RegExp('\\{'+key+'\\}','g'), val)); return s; }
+
     window.restaurarDemo = function() {
-      confirmAction('Restaurar datos demo', '¿Está seguro? Se perderán todos los datos actuales (lecturas, reportes, umbrales, alertas, mantenimientos) y se cargarán los datos de demostración.').then(r => {
+      confirmAction(t('portal.restore.title'), t('portal.restore.msg')).then(r => {
         if (r) {
           ['smai_lecturas','smai_umbrales','smai_reportes','smai_mantos','smai_alertas','smai_seeded_v1'].forEach(k => { try { localStorage.removeItem(k); } catch(e) {} });
           seedDemoData();
-          showNotification('Datos demo restaurados correctamente. Recargando...', 'success');
+          showNotification(t('notif.demo_restored'), 'success');
           setTimeout(() => { location.reload(); }, 1500);
         }
       });

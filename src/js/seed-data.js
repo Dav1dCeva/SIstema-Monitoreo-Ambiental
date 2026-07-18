@@ -112,12 +112,47 @@ export function seedDemoData() {
   return { umbrales: umbrales.length, lecturas: lecturas.length, reportes: reportes.length, mantos: mantos.length, alertas: alertas.length };
 }
 
+function t(key, params) {
+  let str = window.SMAI?.t?.(key) || key;
+  if (params) Object.entries(params).forEach(([k, v]) => { str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), v); });
+  return str;
+}
+
+const SEED_PARAM_MAP = {
+  'Temperatura (°C)': 'sensor.temp',
+  'Humedad (%)': 'sensor.hum',
+  'Calidad del Aire (AQI)': 'sensor.aqi',
+  'Ruido (dB)': 'sensor.ruido'
+};
+
+const SEED_LOCATION_MAP = {
+  'Torre Norte': 'location.torre-norte',
+  'Río Principal': 'location.rio-principal',
+  'Centro Urbano': 'location.centro-urbano',
+  'Zona Industrial': 'location.zona-industrial',
+  'Sector A': 'seed.loc.sector_a',
+  'Azotea Edificio': 'seed.loc.azotea',
+  'Estación Sur': 'seed.loc.estacion_sur',
+  'Zona Humedal': 'seed.loc.zona_humedal',
+  'Avenida Principal': 'seed.loc.avenida',
+  'Parque Central': 'seed.loc.parque',
+  'Calle Comercial': 'seed.loc.calle',
+  'Cercanías Taller': 'seed.loc.cercanias'
+};
+
+export function translateSeed(val) {
+  if (!val) return val;
+  if (SEED_PARAM_MAP[val]) return t(SEED_PARAM_MAP[val]);
+  if (SEED_LOCATION_MAP[val]) return t(SEED_LOCATION_MAP[val]);
+  return val;
+}
+
 export function simularAlerta() {
   const params = [
-    { nombre: 'Temperatura (°C)', sensor: 'ST-001', valor: (Math.random() * 30 + 15).toFixed(1), unidad: '°C (Temperatura)', ubicacion: 'Torre Norte' },
-    { nombre: 'Humedad (%)', sensor: 'SH-002', valor: (Math.random() * 60 + 30).toFixed(1), unidad: '% (Humedad)', ubicacion: 'Río Principal' },
-    { nombre: 'Calidad del Aire (AQI)', sensor: 'SA-003', valor: Math.floor(Math.random() * 150 + 20), unidad: 'AQI (Calidad del Aire)', ubicacion: 'Centro Urbano' },
-    { nombre: 'Ruido (dB)', sensor: 'SR-004', valor: (Math.random() * 60 + 30).toFixed(1), unidad: 'dB (Ruido)', ubicacion: 'Zona Industrial' }
+    { nombre: t('sensor.temp'), sensor: 'ST-001', valor: (Math.random() * 30 + 15).toFixed(1), unidad: '°C', ubicacion: t('location.torre-norte') },
+    { nombre: t('sensor.hum'), sensor: 'SH-002', valor: (Math.random() * 60 + 30).toFixed(1), unidad: '%', ubicacion: t('location.rio-principal') },
+    { nombre: t('sensor.aqi'), sensor: 'SA-003', valor: Math.floor(Math.random() * 150 + 20), unidad: 'AQI', ubicacion: t('location.centro-urbano') },
+    { nombre: t('sensor.ruido'), sensor: 'SR-004', valor: (Math.random() * 60 + 30).toFixed(1), unidad: 'dB', ubicacion: t('location.zona-industrial') }
   ];
   const p = params[Math.floor(Math.random() * params.length)];
   const alerta = {
@@ -125,8 +160,8 @@ export function simularAlerta() {
     parametro: p.nombre,
     valor: p.valor + ' ' + p.unidad,
     ubicacion: p.ubicacion,
-    umbral: 'Límites configurados',
-    mensaje: '⚠ Alerta simulada: ' + p.nombre + ' = ' + p.valor + ' en ' + p.ubicacion
+    umbral: t('seed.configured_limits'),
+    mensaje: '⚠ ' + t('seed.sim_alert') + ': ' + p.nombre + ' = ' + p.valor + ' en ' + p.ubicacion
   };
   const lista = JSON.parse(localStorage.getItem('smai_alertas')) || [];
   lista.push(alerta);

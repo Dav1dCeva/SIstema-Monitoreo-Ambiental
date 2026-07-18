@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:10.000
+SMAI is the Smart Environmental Monitoring System. A web platform for capturing, monitoring, and analyzing environmental data in real time.
+
+00:00:10.000 --> 00:00:18.000
+Log in with your email and select your role. As an administrator, you access the Dashboard, the system control center.
+
+00:00:18.000 --> 00:00:32.000
+Here you see a general overview: total readings, active sensors, current alerts. Each sensor shows its latest reading and status. The weekly chart helps detect patterns.
+
+00:00:32.000 --> 00:00:42.000
+In Thresholds you configure alert limits for each sensor. Press "+ New threshold", select the parameter, enter minimum and maximum, and save.
+
+00:00:42.000 --> 00:00:50.000
+The system automatically validates readings against these values.
+
+00:00:50.000 --> 00:01:04.000
+Query historical data with filters by date, parameter, and location. Results are shown in a dynamic table. Export to PDF or Excel with a single click for your reports.
+
+00:01:04.000 --> 00:01:18.000
+The Alerts module records every time a reading exceeds the configured thresholds. You can simulate an alert to test the system.
+
+00:01:18.000 --> 00:01:35.000
+SMAI: actionable data for a sustainable future.

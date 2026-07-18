@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:07.000
+En el módulo de Reporte de Fallas podemos gestionar incidentes y mantenimientos de los sensores.
+
+00:00:07.500 --> 00:00:18.000
+Presione más Nuevo reporte, seleccione el equipo afectado, escriba un asunto y descripción, y guarde.
+
+00:00:18.500 --> 00:00:27.000
+El reporte queda registrado con estado Pendiente en la tabla de historial, donde puede cambiarlo a Solucionado o eliminarlo.
+
+00:00:27.500 --> 00:00:35.000
+Con más Registrar mantenimiento anote el equipo y la acción realizada para dejar constancia de cada intervención.
