@@ -190,6 +190,7 @@
       reporteForm: { equipo: '', asunto: '', descripcion: '' },
       mantoForm: { equipo: '', accion: '' },
       translateSeed,
+      t,
 
       get pendientes() { return this.reportes.filter(r => r.estado !== 'Solucionado').length; },
       get solucionados() { return this.reportes.filter(r => r.estado === 'Solucionado').length; },
