@@ -51,14 +51,14 @@
 
   <script type="module">
     import Alpine from '/src/js/main.js';
-    import { isLoggedIn, getUser, login } from '/src/js/auth.js';
+    import { isLoggedIn, getUser, login, resolvePath } from '/src/js/auth.js';
 
     function t(k, p={}) { let s = window.SMAI?.t?.(k) || k; if(p) Object.entries(p).forEach(([key,val]) => s = s.replace(new RegExp('\\{'+key+'\\}','g'), val)); return s; }
 
     if (isLoggedIn()) {
       const user = getUser();
-      const roleHome = { admin: '/src/pages/dashboard.html', consultor: '/src/pages/consulta-datos.html', tecnico: '/src/pages/lecturas-manuales.html' };
-      window.location.href = roleHome[user.role] || '/src/pages/dashboard.html';
+      const roleHome = { admin: resolvePath('/src/pages/dashboard.html'), consultor: resolvePath('/src/pages/consulta-datos.html'), tecnico: resolvePath('/src/pages/lecturas-manuales.html') };
+      window.location.href = roleHome[user.role] || resolvePath('/src/pages/dashboard.html');
     } else {
       Alpine.start();
       document.getElementById('loginForm').addEventListener('submit', function(e) {
@@ -73,8 +73,8 @@
         err.classList.add('hidden');
         login(email, rol);
         window.showNotification(t('login.notification.success', {role: rol}), 'success');
-        const roleHome = { admin: '/src/pages/dashboard.html', consultor: '/src/pages/consulta-datos.html', tecnico: '/src/pages/lecturas-manuales.html' };
-        setTimeout(() => { window.location.href = roleHome[rol] || '/src/pages/dashboard.html'; }, 1000);
+        const roleHome = { admin: resolvePath('/src/pages/dashboard.html'), consultor: resolvePath('/src/pages/consulta-datos.html'), tecnico: resolvePath('/src/pages/lecturas-manuales.html') };
+        setTimeout(() => { window.location.href = roleHome[rol] || resolvePath('/src/pages/dashboard.html'); }, 1000);
       });
     }
   </script>

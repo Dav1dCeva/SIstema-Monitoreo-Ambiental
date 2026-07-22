@@ -2,9 +2,10 @@ const AUTH_KEY = 'smai_logged_in';
 const USER_KEY = 'smai_user';
 
 export function resolvePath(rootPath) {
-  const depth = (window.location.pathname.replace(/\/[^/]*\//g, '').match(/\//g) || []).length;
-  if (depth <= 1) return '.' + rootPath;
-  return '..' + rootPath;
+  const isSubPage = window.location.pathname.includes('/src/pages/');
+  if (!isSubPage) return '.' + rootPath;
+  if (rootPath.startsWith('/src/pages/')) return './' + rootPath.split('/').pop();
+  return '../..' + rootPath;
 }
 
 const ACCESS = {
