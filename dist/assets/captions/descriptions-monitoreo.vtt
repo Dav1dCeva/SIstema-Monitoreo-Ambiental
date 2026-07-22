@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:10.000
+Logo de SMAI en pantalla. Transición a la página de inicio de sesión con campos de correo y contraseña, y un selector desplegable de roles.
+
+00:00:10.000 --> 00:00:18.000
+El cursor escribe "admin@smai.cl" en el campo de correo. Selecciona "Administrador" del menú desplegable. Hace clic en el botón "Ingresar". La pantalla cambia al Dashboard.
+
+00:00:18.000 --> 00:00:32.000
+El Dashboard muestra cuatro tarjetas con estadísticas: total de lecturas, sensores activos, alertas vigentes y días con datos. Debajo, una grilla con cuatro sensores: ST-001 Temperatura en verde, SH-002 Humedad en verde, SA-003 Calidad del Aire en rojo, SR-004 Ruido en verde. Más abajo, un gráfico de líneas con tendencia semanal.
+
+00:00:32.000 --> 00:00:42.000
+Navegación al módulo de Umbrales. Se ve una tabla con umbrales existentes. El cursor hace clic en el botón "+ Nuevo umbral". Se abre un formulario. Se selecciona "Temperatura" y "Torre Norte", se escribe 15 en mínimo y 35 en máximo.
+
+00:00:42.000 --> 00:00:50.000
+Clic en "Guardar". El nuevo umbral aparece en la tabla con los valores ingresados.
+
+00:00:50.000 --> 00:01:04.000
+Pantalla de Consulta de Datos. Se selecciona fecha de la última semana y ubicación "Torre Norte" en los filtros. Clic en "Filtrar". Aparece una tabla con resultados. Clic en el botón "PDF". Se descarga un archivo.
+
+00:01:04.000 --> 00:01:18.000
+Pantalla de Alertas con una tabla de historial. Las filas se muestran con colores según gravedad. Clic en "Simular alerta". Una nueva fila aparece en la tabla con una alerta recién generada.
+
+00:01:18.000 --> 00:01:35.000
+Fundido a negro. Aparece el logo de SMAI centrado con el texto "SMAI — Monitoreo Inteligente".

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Monitoreo Ambiental</title>
+  <script type="module" crossorigin src="../../assets/dashboard-0Hnn19PO.js"></script>
+  <link rel="modulepreload" crossorigin href="../../assets/main-CgvDO_Tw.js">
+  <link rel="stylesheet" crossorigin href="../../assets/main-BD7aTh0w.css">
+</head>
+<body>
+  <a href="#main" class="skip-link" data-i18n="skip">Saltar al contenido principal</a>
+  <header class="app-header">
+    <h1><span aria-hidden="true">🌿</span> Monitoreo Ambiental Inteligente</h1>
+    <nav aria-label="Main navigation"></nav>
+  </header>
+  <main id="main" hidden class="flex-1 px-6 py-8 max-w-5xl w-full mx-auto" x-data="dashboardApp()">
+    <div class="flex justify-between items-center flex-wrap gap-3 mb-4">
+      <h2 class="text-lg font-semibold" data-i18n="dash.title">Dashboard de Monitoreo</h2>
+      <div class="flex gap-2">
+        <button class="btn-success" data-tooltip="Descarga un archivo PDF con las lecturas actuales" @click="exportPDF('dashboard')" data-i18n="dash.pdf"><span aria-hidden="true">📄</span> Generar reporte PDF</button>
+        <button class="btn-primary" data-tooltip="Descarga un archivo Excel con las lecturas actuales" @click="exportExcel('dashboard')" data-i18n="dash.excel"><span aria-hidden="true">📊</span> Descargar Excel</button>
+      </div>
+    </div>
+
+    <figure class="text-center mb-4">
+      <img src="../../assets/red-sensores-BEi278zm.png" alt="Red de sensores desplegados por zona: Torre Norte, Río Principal, Centro Urbano, Zona Industrial conectados al Centro de Control SMAI" data-i18n-attr="alt:dash.network.alt" class="max-w-full h-auto rounded-lg inline-block">
+      <figcaption class="text-xs text-muted mt-1.5" data-i18n="dash.network.caption">Red de sensores desplegados — las lecturas se transmiten al centro de control SMAI</figcaption>
+    </figure>
+
+    <div class="flex gap-4 flex-wrap mb-6">
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalLecturas">0</div><div class="stat-label" data-i18n="dash.stat.readings">Lecturas registradas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="totalSensores">0</div><div class="stat-label" data-i18n="dash.stat.sensors">Sensores activos</div></div>
+      <div class="stat-card danger"><div class="stat-value text-danger" x-text="totalAlertas">0</div><div class="stat-label" data-i18n="dash.stat.alerts">Alertas activas</div></div>
+      <div class="stat-card primary"><div class="stat-value text-primary" x-text="diasConDatos">0</div><div class="stat-label" data-i18n="dash.stat.days">Días con datos</div></div>
+    </div>
+
+    <div class="context-bar" id="contextGeneral" data-i18n="dash.context.general">
+      Resumen general del sistema de monitoreo. Las métricas superiores muestran el promedio general de cada variable ambiental medida por todos los sensores desplegados.
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <template x-for="m in metricas" :key="m.label">
+        <div class="stat-card" :style="'border-left-color:'+m.color">
+          <div class="stat-value" x-text="m.valor" :style="'color:'+m.color">--</div>
+          <div class="stat-label" x-text="m.label"></div>
+          <div class="text-xs text-muted mt-1" data-i18n="dash.avg">Promedio general</div>
+        </div>
+      </template>
+    </div>
+
+    <div class="card-modern mb-6">
+      <h2 class="text-base font-semibold mb-3" data-i18n="dash.sensor.title">Últimas Lecturas por Sensor</h2>
+      <div class="context-bar" id="contextSensores" data-i18n="dash.sensor.context">
+        Cada tarjeta representa un sensor físico. Muestra la lectura más reciente y su estado.
+      </div>
+      <div class="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-3">
+        <template x-for="s in sensores" :key="s.id">
+          <div class="bg-card p-4 rounded-lg shadow-card border border-border" :style="'border-left:4px solid '+s.color">
+            <div class="text-sm text-muted" x-text="s.nombre"></div>
+            <div class="text-2xl font-bold mt-1" x-text="s.valorMostrado"></div>
+            <div class="text-xs mt-2" :class="'badge '+s.badgeCls" x-text="s.estado"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <div class="card-modern mb-6">
+      <h2 class="text-base font-semibold mb-3" data-i18n="dash.chart.title">Tendencias de Temperatura (Últimos 7 días)</h2>
+      <div class="context-bar" data-i18n="dash.chart.context">
+        Este gráfico muestra el promedio diario de temperatura del sensor ST-001 (Torre Norte) durante la última semana.
+      </div>
+      <div class="min-h-[280px] flex items-center justify-center">
+        <canvas id="tempChart" class="max-h-[300px] w-full"></canvas>
+      </div>
+    </div>
+
+    <div class="card-modern">
+      <div class="flex justify-between items-center flex-wrap gap-2 mb-3">
+        <h2 class="text-base font-semibold" data-i18n="dash.recent_alerts">Alertas Recientes</h2>
+        <button class="btn-danger" @click="simularAlerta()" data-i18n="dash.simulate_alert">🚨 Simular alerta</button>
+      </div>
+      <div class="context-bar" data-i18n="dash.recent_alerts.context">
+        Las alertas se generan automáticamente cuando una lectura supera los umbrales configurados.
+      </div>
+      <div class="overflow-x-auto max-h-[320px] overflow-y-auto">
+      <table class="w-full text-sm">
+        <thead class="sticky top-0 bg-gray-50">
+          <tr><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.date">Fecha</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.param">Parámetro</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.value">Valor</th><th class="px-3 py-2.5 text-left font-semibold bg-gray-50 border-b border-border" scope="col" data-i18n="dash.table.location">Ubicación</th></tr>
+        </thead>
+        <tbody>
+          <template x-if="alertasRecientes.length === 0">
+            <tr><td colspan="4" class="px-3 py-2.5 text-center text-muted" data-i18n="dash.table.no_alerts">No hay alertas recientes.</td></tr>
+          </template>
+          <template x-for="a in alertasRecientes" :key="a.fecha">
+            <tr>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.fechaFormateada"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="translateSeed(a.parametro)"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="a.valor"></td>
+              <td class="px-3 py-2.5 border-b border-border" x-text="translateSeed(a.ubicacion)"></td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </main>
+  <footer class="bg-white border-t border-border px-6 py-4 text-center text-xs text-muted">
+    <p><span data-i18n="footer.copy">SMAI</span> &copy; 2026 | <a href="sitemap.html" class="text-primary font-semibold no-underline hover:underline">Mapa del Sitio</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</body>
+</html>

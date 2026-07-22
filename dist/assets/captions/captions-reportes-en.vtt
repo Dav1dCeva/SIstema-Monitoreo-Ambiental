@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:07.000
+In the Issue Reports module, we can manage sensor incidents and maintenance.
+
+00:00:07.500 --> 00:00:18.000
+Press New report, select the affected equipment, write a subject and description, and save.
+
+00:00:18.500 --> 00:00:27.000
+The report is registered with Pending status in the history table, where you can change it to Resolved or delete it.
+
+00:00:27.500 --> 00:00:35.000
+With Register maintenance, note the equipment and the action taken to document each intervention.
