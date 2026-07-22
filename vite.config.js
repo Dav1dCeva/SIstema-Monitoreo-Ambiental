@@ -1,8 +1,11 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
+const isProd = process.env.GITHUB_ACTIONS === 'true';
+const base = isProd ? '/SIstema-Monitoreo-Ambiental/' : './';
+
 export default defineConfig({
-  base: './',
+  base,
   appType: 'mpa',
   build: {
     rollupOptions: {
