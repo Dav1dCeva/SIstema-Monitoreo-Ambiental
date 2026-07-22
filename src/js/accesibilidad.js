@@ -1,3 +1,4 @@
+import { resolvePath } from './auth.js';
 const KEY = 'accesibilidad_prefs';
 const defaults = {
   fontSize: 100, fontFamily: 'default', lineSpacing: false,
@@ -343,9 +344,9 @@ function buildMenu() {
 
 function initKeyboardShortcuts() {
   const shortcuts = {
-    '1': '/index.html', '2': '/src/pages/dashboard.html', '3': '/src/pages/umbrales.html',
-    '4': '/src/pages/consulta-datos.html', '5': '/src/pages/alertas.html', '6': '/src/pages/reporte-fallas.html',
-    '7': '/src/pages/lecturas-manuales.html'
+    '1': resolvePath('/index.html'), '2': resolvePath('/src/pages/dashboard.html'), '3': resolvePath('/src/pages/umbrales.html'),
+    '4': resolvePath('/src/pages/consulta-datos.html'), '5': resolvePath('/src/pages/alertas.html'), '6': resolvePath('/src/pages/reporte-fallas.html'),
+    '7': resolvePath('/src/pages/lecturas-manuales.html')
   };
   document.addEventListener('keydown', e => {
     const p = getPrefs();

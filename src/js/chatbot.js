@@ -1,3 +1,4 @@
+import { resolvePath } from './auth.js';
 const t = (key, params = {}) => {
   const fn = window.SMAI?.t;
   return fn ? fn(key, params) : key;
@@ -437,7 +438,7 @@ function responder(texto, rol) {
       return {
         texto: t('chat.login_redirect'),
         accion: 'redirect',
-        destino: '/src/pages/login.html',
+        destino: resolvePath('/src/pages/login.html'),
         chips: [t('chat.cmd.temp'), t('chat.cmd.alerts'), t('chat.help_title')]
       };
     }
@@ -584,7 +585,7 @@ function handleSend() {
       setTimeout(() => {
         localStorage.removeItem('smai_logged_in');
         localStorage.removeItem('smai_user');
-        window.location.href = '/index.html';
+        window.location.href = resolvePath('/index.html');
       }, 1500);
     }
   }, delay);

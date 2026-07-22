@@ -1,6 +1,12 @@
 const AUTH_KEY = 'smai_logged_in';
 const USER_KEY = 'smai_user';
 
+export function resolvePath(rootPath) {
+  const depth = (window.location.pathname.replace(/\/[^/]*\//g, '').match(/\//g) || []).length;
+  if (depth <= 1) return '.' + rootPath;
+  return '..' + rootPath;
+}
+
 const ACCESS = {
   'index.html':           ['admin','consultor','tecnico'],
   'dashboard.html':       ['admin','consultor'],
@@ -17,38 +23,39 @@ function getNavKeys(role) {
   const t = window.SMAI?.t || (k => k);
   const NAV = {
     admin: [
-      { href: '/index.html', labelKey: 'nav.home' },
-      { href: '/src/pages/dashboard.html', labelKey: 'nav.dashboard' },
-      { href: '/src/pages/umbrales.html', labelKey: 'nav.thresholds' },
-      { href: '/src/pages/consulta-datos.html', labelKey: 'nav.query' },
-      { href: '/src/pages/alertas.html', labelKey: 'nav.alerts' },
-      { href: '/src/pages/reporte-fallas.html', labelKey: 'nav.reports' },
-      { href: '/src/pages/lecturas-manuales.html', labelKey: 'nav.readings' }
+      { href: resolvePath('/index.html'), labelKey: 'nav.home' },
+      { href: resolvePath('/src/pages/dashboard.html'), labelKey: 'nav.dashboard' },
+      { href: resolvePath('/src/pages/umbrales.html'), labelKey: 'nav.thresholds' },
+      { href: resolvePath('/src/pages/consulta-datos.html'), labelKey: 'nav.query' },
+      { href: resolvePath('/src/pages/alertas.html'), labelKey: 'nav.alerts' },
+      { href: resolvePath('/src/pages/reporte-fallas.html'), labelKey: 'nav.reports' },
+      { href: resolvePath('/src/pages/lecturas-manuales.html'), labelKey: 'nav.readings' }
     ],
     consultor: [
-      { href: '/index.html', labelKey: 'nav.home' },
-      { href: '/src/pages/dashboard.html', labelKey: 'nav.dashboard' },
-      { href: '/src/pages/consulta-datos.html', labelKey: 'nav.query' },
-      { href: '/src/pages/alertas.html', labelKey: 'nav.alerts' }
+      { href: resolvePath('/index.html'), labelKey: 'nav.home' },
+      { href: resolvePath('/src/pages/dashboard.html'), labelKey: 'nav.dashboard' },
+      { href: resolvePath('/src/pages/consulta-datos.html'), labelKey: 'nav.query' },
+      { href: resolvePath('/src/pages/alertas.html'), labelKey: 'nav.alerts' }
     ],
     tecnico: [
-      { href: '/index.html', labelKey: 'nav.home' },
-      { href: '/src/pages/lecturas-manuales.html', labelKey: 'nav.readings' },
-      { href: '/src/pages/reporte-fallas.html', labelKey: 'nav.reports' }
+      { href: resolvePath('/index.html'), labelKey: 'nav.home' },
+      { href: resolvePath('/src/pages/lecturas-manuales.html'), labelKey: 'nav.readings' },
+      { href: resolvePath('/src/pages/reporte-fallas.html'), labelKey: 'nav.reports' }
     ]
   };
   return (NAV[role] || NAV.admin).map(l => ({ href: l.href, label: t(l.labelKey) }));
 }
 
-const SHORTCUTS = {
-  '/index.html': 'Alt+1 / Ctrl+Shift+1',
-  '/src/pages/dashboard.html': 'Alt+2 / Ctrl+Shift+2',
-  '/src/pages/umbrales.html': 'Alt+3 / Ctrl+Shift+3',
-  '/src/pages/consulta-datos.html': 'Alt+4 / Ctrl+Shift+4',
-  '/src/pages/alertas.html': 'Alt+5 / Ctrl+Shift+5',
-  '/src/pages/reporte-fallas.html': 'Alt+6 / Ctrl+Shift+6',
-  '/src/pages/lecturas-manuales.html': 'Alt+7 / Ctrl+Shift+7'
-};
+const SHORTCUTS = {};
+function buildShortcuts() {
+  SHORTCUTS[resolvePath('/index.html')] = 'Alt+1 / Ctrl+Shift+1';
+  SHORTCUTS[resolvePath('/src/pages/dashboard.html')] = 'Alt+2 / Ctrl+Shift+2';
+  SHORTCUTS[resolvePath('/src/pages/umbrales.html')] = 'Alt+3 / Ctrl+Shift+3';
+  SHORTCUTS[resolvePath('/src/pages/consulta-datos.html')] = 'Alt+4 / Ctrl+Shift+4';
+  SHORTCUTS[resolvePath('/src/pages/alertas.html')] = 'Alt+5 / Ctrl+Shift+5';
+  SHORTCUTS[resolvePath('/src/pages/reporte-fallas.html')] = 'Alt+6 / Ctrl+Shift+6';
+  SHORTCUTS[resolvePath('/src/pages/lecturas-manuales.html')] = 'Alt+7 / Ctrl+Shift+7';
+}
 
 export function login(email, role) {
   try {
@@ -62,7 +69,7 @@ export function logout() {
     localStorage.removeItem(AUTH_KEY);
     localStorage.removeItem(USER_KEY);
   } catch(e) {}
-  window.location.href = '/index.html';
+  window.location.href = resolvePath('/index.html');
 }
 
 export function isLoggedIn() {
@@ -96,7 +103,7 @@ export function requireAccess() {
   if (isLoggedIn() && !hasAccess(page)) {
     const t = window.SMAI?.t || (k => k);
     window.showNotification?.(t('notif.login'), 'error');
-    setTimeout(() => { window.location.href = '/index.html'; }, 1500);
+    setTimeout(() => { window.location.href = resolvePath('/index.html'); }, 1500);
   }
 }
 
@@ -167,7 +174,7 @@ export function protectPage() {
   const page = path.split('/').pop() || 'index.html';
   if (page === 'login.html') return;
   if (!isLoggedIn()) {
-    window.location.href = '/src/pages/login.html';
+    window.location.href = resolvePath('/src/pages/login.html');
     return;
   }
   const main = document.getElementById('main');
@@ -175,7 +182,7 @@ export function protectPage() {
   if (!hasAccess(page)) {
     const t = window.SMAI?.t || (k => k);
     window.showNotification?.(t('notif.login'), 'error');
-    setTimeout(() => { window.location.href = '/index.html'; }, 1500);
+    setTimeout(() => { window.location.href = resolvePath('/index.html'); }, 1500);
   }
 }
 
@@ -283,6 +290,7 @@ export function initSessionTimer() {
 
 // Auto-init: nav + session + logout listener
 document.addEventListener('DOMContentLoaded', () => {
+  buildShortcuts();
   updateAuthUI();
   initSessionTimer();
   document.addEventListener('click', e => {
